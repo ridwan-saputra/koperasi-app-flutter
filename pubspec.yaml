@@ -31,22 +31,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.4.9 # State management yang aman dan modern
-  sqflite: ^2.3.0 # Local database sesuai requirement
-  path: ^1.8.3 # Path helper untuk lokasi file SQLite
-  fpdart: ^1.1.0 # Functional programming (Wajib untuk Clean Arch: Error handling menggunakan tipe data Either<Failure, Success>)
-  freezed_annotation: ^2.4.1 # Membuat Data Class (Model/Entity) yang immutable dan aman
-  json_annotation: ^4.8.1 # Serialisasi data
-  go_router: ^12.1.1 # Routing modern pengganti Navigator standar, sangat bagus untuk handle Role (Admin/User)
-  uuid: ^4.2.2 # Generate Unique ID untuk transaksi & user
-  image_picker: ^1.0.4 # Untuk fitur upload KTP & Selfie KTP
+  flutter_riverpod: ^2.4.9
+  sqflite: ^2.3.0
+  path: ^1.8.3
+  fpdart: ^1.1.0
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
+  go_router: ^12.1.1
+  uuid: ^4.2.2
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.7 # Code generator untuk Freezed & JSON serializable
-  freezed: ^2.4.5 # Pasangan freezed_annotation
-  json_serializable: ^8.0.0 # Pasangan json_annotation
+  build_runner: ^2.4.7
+  freezed: ^2.4.5
+  json_serializable: ^6.9.5
+  flutter_lints:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
