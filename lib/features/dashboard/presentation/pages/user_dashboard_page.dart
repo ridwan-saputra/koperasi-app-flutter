@@ -137,15 +137,14 @@ _buildMenuButton(
                     );
                   },
                 ),
-                _buildMenuButton(
+_buildMenuButton(
                   context,
                   icon: Icons.history_rounded,
                   label: 'Riwayat',
                   color: Colors.purple,
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Fitur Riwayat belum tersedia')),
-                    );
+                    // Berpindah ke halaman riwayat
+                    context.push('/history');
                   },
                 ),
               ],

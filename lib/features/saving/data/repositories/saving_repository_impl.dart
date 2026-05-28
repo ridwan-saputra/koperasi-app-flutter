@@ -48,4 +48,25 @@ class SavingRepositoryImpl implements SavingRepository {
       return Left(DatabaseFailure('Transaksi gagal: ${e.toString()}'));
     }
   }
+  @override
+  Future<Either<Failure, List<TransactionEntity>>> getTransactionHistory(String userId) async {
+    try {
+      final db = await dbHelper.database;
+      
+      // Ambil data transaksi berdasarkan user_id, urutkan dari yang terbaru
+      final List<Map<String, dynamic>> maps = await db.query(
+        'transactions',
+        where: 'user_id = ?',
+        whereArgs: [userId],
+        orderBy: 'created_at DESC',
+      );
+
+      // Ubah dari bentuk Map (JSON SQLite) menjadi List of Entity
+      final List<TransactionEntity> history = maps.map((map) => TransactionEntity.fromJson(map)).toList();
+
+      return Right(history);
+    } catch (e) {
+      return Left(DatabaseFailure('Gagal memuat riwayat transaksi: ${e.toString()}'));
+    }
+  }
 }
