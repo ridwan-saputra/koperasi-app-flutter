@@ -22,14 +22,16 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$UserEntity {
   String get id => throw _privateConstructorUsedError;
-  String get role =>
-      throw _privateConstructorUsedError; // Akan berisi 'USER' atau 'ADMIN'
+  String get role => throw _privateConstructorUsedError;
   String get nik => throw _privateConstructorUsedError;
+  @JsonKey(name: 'nama_lengkap')
   String get namaLengkap => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  @JsonKey(name: 'no_hp')
   String get noHp => throw _privateConstructorUsedError;
-  String get passwordHash =>
-      throw _privateConstructorUsedError; // Praktik arsitektur backend: jangan gunakan plain password
+  @JsonKey(name: 'password_hash')
+  String get passwordHash => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this UserEntity to a JSON map.
@@ -53,11 +55,11 @@ abstract class $UserEntityCopyWith<$Res> {
     String id,
     String role,
     String nik,
-    String namaLengkap,
+    @JsonKey(name: 'nama_lengkap') String namaLengkap,
     String email,
-    String noHp,
-    String passwordHash,
-    DateTime createdAt,
+    @JsonKey(name: 'no_hp') String noHp,
+    @JsonKey(name: 'password_hash') String passwordHash,
+    @JsonKey(name: 'created_at') DateTime createdAt,
   });
 }
 
@@ -138,11 +140,11 @@ abstract class _$$UserEntityImplCopyWith<$Res>
     String id,
     String role,
     String nik,
-    String namaLengkap,
+    @JsonKey(name: 'nama_lengkap') String namaLengkap,
     String email,
-    String noHp,
-    String passwordHash,
-    DateTime createdAt,
+    @JsonKey(name: 'no_hp') String noHp,
+    @JsonKey(name: 'password_hash') String passwordHash,
+    @JsonKey(name: 'created_at') DateTime createdAt,
   });
 }
 
@@ -215,11 +217,11 @@ class _$UserEntityImpl implements _UserEntity {
     required this.id,
     required this.role,
     required this.nik,
-    required this.namaLengkap,
+    @JsonKey(name: 'nama_lengkap') required this.namaLengkap,
     required this.email,
-    required this.noHp,
-    required this.passwordHash,
-    required this.createdAt,
+    @JsonKey(name: 'no_hp') required this.noHp,
+    @JsonKey(name: 'password_hash') required this.passwordHash,
+    @JsonKey(name: 'created_at') required this.createdAt,
   });
 
   factory _$UserEntityImpl.fromJson(Map<String, dynamic> json) =>
@@ -229,19 +231,21 @@ class _$UserEntityImpl implements _UserEntity {
   final String id;
   @override
   final String role;
-  // Akan berisi 'USER' atau 'ADMIN'
   @override
   final String nik;
   @override
+  @JsonKey(name: 'nama_lengkap')
   final String namaLengkap;
   @override
   final String email;
   @override
+  @JsonKey(name: 'no_hp')
   final String noHp;
   @override
+  @JsonKey(name: 'password_hash')
   final String passwordHash;
-  // Praktik arsitektur backend: jangan gunakan plain password
   @override
+  @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
   @override
@@ -300,11 +304,11 @@ abstract class _UserEntity implements UserEntity {
     required final String id,
     required final String role,
     required final String nik,
-    required final String namaLengkap,
+    @JsonKey(name: 'nama_lengkap') required final String namaLengkap,
     required final String email,
-    required final String noHp,
-    required final String passwordHash,
-    required final DateTime createdAt,
+    @JsonKey(name: 'no_hp') required final String noHp,
+    @JsonKey(name: 'password_hash') required final String passwordHash,
+    @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _$UserEntityImpl;
 
   factory _UserEntity.fromJson(Map<String, dynamic> json) =
@@ -313,18 +317,22 @@ abstract class _UserEntity implements UserEntity {
   @override
   String get id;
   @override
-  String get role; // Akan berisi 'USER' atau 'ADMIN'
+  String get role;
   @override
   String get nik;
   @override
+  @JsonKey(name: 'nama_lengkap')
   String get namaLengkap;
   @override
   String get email;
   @override
+  @JsonKey(name: 'no_hp')
   String get noHp;
   @override
-  String get passwordHash; // Praktik arsitektur backend: jangan gunakan plain password
+  @JsonKey(name: 'password_hash')
+  String get passwordHash;
   @override
+  @JsonKey(name: 'created_at')
   DateTime get createdAt;
 
   /// Create a copy of UserEntity
