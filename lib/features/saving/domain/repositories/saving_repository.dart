@@ -1,0 +1,11 @@
+import 'package:fpdart/fpdart.dart';
+import '../../../../core/errors/failures.dart';
+import '../entities/transaction_entity.dart';
+
+abstract class SavingRepository {
+  // Fungsi untuk mengambil total saldo berdasarkan ID User
+  Future<Either<Failure, double>> getTotalBalance(String userId);
+  
+  // Fungsi untuk memasukkan data simpanan baru
+  Future<Either<Failure, TransactionEntity>> deposit(TransactionEntity transaction);
+}
