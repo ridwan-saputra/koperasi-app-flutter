@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart'; // Tambahan import GoRouter
 import '../providers/auth_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -54,7 +55,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 backgroundColor: Colors.green,
               ),
             );
-            // TODO: Arahkan ke Dashboard (User / Admin) menggunakan GoRouter nanti
+            
+            // Logika pemisahan Role (GoRouter)
+            if (user.role == 'ADMIN') {
+              context.go('/admin-dashboard');
+            } else {
+              context.go('/user-dashboard');
+            }
           }
         },
       );
