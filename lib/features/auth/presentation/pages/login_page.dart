@@ -155,6 +155,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                         ),
                 ),
+                
+                const SizedBox(height: 16),
+                
+                // Tombol teks untuk pindah ke halaman registrasi
+                TextButton(
+                  onPressed: () {
+                    context.push('/register');
+                  },
+                  child: const Text('Belum punya akun? Daftar di sini'),
+                ),
               ],
             ),
           ),

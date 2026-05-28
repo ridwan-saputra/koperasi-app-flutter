@@ -15,7 +15,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepositoryImpl(dbHelper);
 });
 
-// 3. Controller untuk State Login di UI
+// 3. Controller untuk State Login dan Register di UI
 class AuthNotifier extends StateNotifier<AsyncValue<UserEntity?>> {
   final AuthRepository _repository;
 
@@ -23,13 +23,12 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserEntity?>> {
   AuthNotifier(this._repository) : super(const AsyncValue.data(null));
 
   Future<void> login(String email, String password) async {
-    // Ubah state menjadi loading (agar UI bisa menampilkan CircularProgressIndicator)
+    // Ubah state menjadi loading
     state = const AsyncValue.loading();
-
+    
     // Panggil fungsi login dari layer Data
     final result = await _repository.login(email, password);
-
-    // fpdart membagi hasil jadi 2: Kiri (Error) dan Kanan (Sukses)
+    
     result.fold(
       (failure) {
         // Jika gagal, kembalikan pesan error ke UI
@@ -42,14 +41,32 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserEntity?>> {
     );
   }
 
+  Future<void> register(UserEntity newUser) async {
+    // Ubah state menjadi loading
+    state = const AsyncValue.loading();
+    
+    // Panggil fungsi register dari layer Data
+    final result = await _repository.register(newUser);
+    
+    result.fold(
+      (failure) {
+        // Jika gagal, kembalikan pesan error ke UI
+        state = AsyncValue.error(failure.message, StackTrace.current);
+      },
+      (user) {
+        // Jika sukses register, kita langsung anggap user tersebut login
+        state = AsyncValue.data(user);
+      },
+    );
+  }
+  
   void logout() {
     state = const AsyncValue.data(null);
   }
 }
 
-// 4. Provider utama yang akan dipanggil langsung oleh Halaman Login
-final authNotifierProvider =
-    StateNotifierProvider<AuthNotifier, AsyncValue<UserEntity?>>((ref) {
-      final repository = ref.watch(authRepositoryProvider);
-      return AuthNotifier(repository);
-    });
+// 4. Provider utama yang akan dipanggil langsung oleh Halaman UI
+final authNotifierProvider = StateNotifierProvider<AuthNotifier, AsyncValue<UserEntity?>>((ref) {
+  final repository = ref.watch(authRepositoryProvider);
+  return AuthNotifier(repository);
+});
