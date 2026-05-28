@@ -8,4 +8,7 @@ abstract class SavingRepository {
   
   // Fungsi untuk memasukkan data simpanan baru
   Future<Either<Failure, TransactionEntity>> deposit(TransactionEntity transaction);
+
+  // Fungsi untuk mengambil riwayat transaksi berdasarkan ID User
+  Future<Either<Failure, List<TransactionEntity>>> getTransactionHistory(String userId);
 }

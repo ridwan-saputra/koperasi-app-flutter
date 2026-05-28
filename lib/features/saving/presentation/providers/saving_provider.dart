@@ -49,3 +49,14 @@ final balanceNotifierProvider = StateNotifierProvider<BalanceNotifier, AsyncValu
   final repository = ref.watch(savingRepositoryProvider);
   return BalanceNotifier(repository);
 });
+
+// 4. Provider untuk memuat Riwayat Transaksi (FutureProvider)
+final historyProvider = FutureProvider.family<List<TransactionEntity>, String>((ref, userId) async {
+  final repository = ref.watch(savingRepositoryProvider);
+  final result = await repository.getTransactionHistory(userId);
+  
+  return result.fold(
+    (failure) => throw Exception(failure.message), // Lempar error jika gagal
+    (history) => history, // Kembalikan list transaksi jika sukses
+  );
+});
