@@ -22,7 +22,7 @@ class DatabaseHelper {
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
-  Future _createDB(Database db, int version) async {
+Future _createDB(Database db, int version) async {
     // 1. Membuat tabel users
     await db.execute('''
       CREATE TABLE users (
@@ -37,7 +37,20 @@ class DatabaseHelper {
       )
     ''');
 
-    // 2. Akun Admin Default (Predefined) agar kita bisa langsung login
+    // 2. Membuat tabel transactions (Simpanan)
+    await db.execute('''
+      CREATE TABLE transactions (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        type TEXT NOT NULL,
+        nominal REAL NOT NULL,
+        status TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      )
+    ''');
+    
+    // 3. Akun Admin Default (Predefined)
     await db.execute('''
       INSERT INTO users (id, role, nik, nama_lengkap, email, no_hp, password_hash, created_at)
       VALUES ('admin-001', 'ADMIN', '0000000000000000', 'Administrator', 'admin@koperasi.com', '080000000000', 'admin123', '${DateTime.now().toIso8601String()}')
