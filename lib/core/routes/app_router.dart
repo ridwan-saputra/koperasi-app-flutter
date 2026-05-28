@@ -3,6 +3,7 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart'; // Tambahan ini
 import '../../features/dashboard/presentation/pages/admin_dashboard_page.dart';
 import '../../features/dashboard/presentation/pages/user_dashboard_page.dart';
+import '../../features/saving/presentation/pages/deposit_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -18,6 +19,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/user-dashboard',
       builder: (context, state) => const UserDashboardPage(),
+    ),
+    GoRoute(
+      path: '/deposit',
+      builder: (context, state) => const DepositPage(),
     ),
     GoRoute(
       path: '/admin-dashboard',
