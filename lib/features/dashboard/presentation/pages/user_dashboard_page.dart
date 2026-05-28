@@ -116,16 +116,14 @@ class _UserDashboardPageState extends ConsumerState<UserDashboardPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildMenuButton(
+_buildMenuButton(
                   context,
                   icon: Icons.add_circle_outline_rounded,
                   label: 'Simpan',
                   color: Colors.green,
                   onTap: () {
-                    // TODO: Panggil fitur Setor Tunai
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Fitur Setor Tunai segera hadir!')),
-                    );
+                    // Berpindah ke halaman deposit
+                    context.push('/deposit');
                   },
                 ),
                 _buildMenuButton(
