@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../domain/entities/loan_entity.dart';
 import '../../domain/services/loan_calculator.dart';
 import '../providers/loan_draft_provider.dart';
+import '../providers/loan_provider.dart';
 
 class LoanReviewPage extends ConsumerStatefulWidget {
   const LoanReviewPage({super.key});
@@ -12,42 +17,81 @@ class LoanReviewPage extends ConsumerStatefulWidget {
 
 class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
   bool _isAgreed = false;
-  bool _isLoading = false;
 
-  void _submitLoanRequest() async {
-    setState(() => _isLoading = true);
-    
-    // TODO: Fungsi Insert ke SQLite & Repository akan dikerjakan di Tahap 3
-    await Future.delayed(const Duration(seconds: 2)); // Simulasi loading sementara
+  void _submitLoanRequest(Map<String, dynamic> draftData, String userId) async {
+    final double nominal = draftData['nominal'];
+    final int tenor = draftData['tenor'];
 
-    if (mounted) {
+    // Hitung rincian finansial murni dari Domain Logic
+    // final totalBunga = LoanCalculator.hitungTotalBunga(nominal, tenor);
+    final totalBayar = LoanCalculator.hitungTotalBayar(nominal, tenor);
+    final cicilan = LoanCalculator.hitungCicilanPerBulan(nominal, tenor);
+
+    // Bungkus semua data menjadi satu objek LoanEntity yang utuh
+    final finalLoan = LoanEntity(
+      id: const Uuid().v4(),
+      userId: userId,
+      nominalPokok: nominal,
+      tenorBulan: tenor,
+      bungaPersen: LoanCalculator.bungaPerBulan * 100, // Simpan dalam persen (2%)
+      biayaAdmin: LoanCalculator.biayaAdminTetap,
+      totalBayar: totalBayar,
+      cicilanPerBulan: cicilan,
+      agunanDetail: draftData['agunan'],
+      alamatTinggal: draftData['alamat'],
+      pekerjaan: draftData['pekerjaan'],
+      totalPendapatan: draftData['pendapatan'],
+      rekeningTujuan: draftData['rekening'],
+      ktpImagePath: draftData['ktpPath'],
+      selfieImagePath: draftData['selfiePath'],
+      status: 'PENDING', // Status default saat pertama diajukan
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    // Eksekusi penyimpanan ke SQLite melalui Riverpod
+    final success = await ref.read(loanNotifierProvider.notifier).submitLoan(finalLoan);
+
+    if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Simulasi: Pengajuan berhasil! Status PENDING.'), backgroundColor: Colors.green),
+        const SnackBar(
+          content: Text('Pengajuan pinjaman berhasil diajukan! Status: PENDING'),
+          backgroundColor: Colors.green,
+        ),
       );
-      // Bersihkan draft dan kembali ke Dashboard
+      // Bersihkan draft data sementara agar aman
       ref.read(loanDraftProvider.notifier).state = null;
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      // Kembali ke halaman utama (Dashboard)
+      context.go('/user-dashboard');
     }
-    
-    setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Membaca data sementara dari form sebelumnya
     final draftData = ref.watch(loanDraftProvider);
+    final user = ref.watch(authNotifierProvider).value;
+    final loanState = ref.watch(loanNotifierProvider);
 
-    if (draftData == null) {
-      return const Scaffold(body: Center(child: Text('Data pengajuan tidak ditemukan.')));
+    if (draftData == null || user == null) {
+      return const Scaffold(body: Center(child: Text('Data pengajuan tidak lengkap.')));
     }
 
     final double nominal = draftData['nominal'];
     final int tenor = draftData['tenor'];
-
-    // Memanggil Domain Logic (Clean Architecture)
     final totalBunga = LoanCalculator.hitungTotalBunga(nominal, tenor);
     final totalBayar = LoanCalculator.hitungTotalBayar(nominal, tenor);
     final cicilan = LoanCalculator.hitungCicilanPerBulan(nominal, tenor);
+
+    // Dengarkan jika ada pesan error dari database untuk dimunculkan ke SnackBar
+    ref.listen<AsyncValue>(loanNotifierProvider, (previous, next) {
+      next.whenOrNull(
+        error: (error, stack) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.toString()), backgroundColor: Colors.redAccent),
+          );
+        },
+      );
+    });
 
     return Scaffold(
       appBar: AppBar(title: const Text('Konfirmasi Pinjaman')),
@@ -89,7 +133,6 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
 
           const SizedBox(height: 40),
           
-          // Checkbox Persetujuan
           CheckboxListTile(
             value: _isAgreed,
             activeColor: Colors.blueAccent,
@@ -97,7 +140,7 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
               'Saya menyetujui seluruh syarat, ketentuan, serta rincian biaya Koperasi yang tertera di atas.',
               style: TextStyle(fontSize: 14),
             ),
-            onChanged: (value) => setState(() => _isAgreed = value ?? false),
+            onChanged: loanState.isLoading ? null : (value) => setState(() => _isAgreed = value ?? false),
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
           ),
@@ -105,13 +148,13 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
           const SizedBox(height: 24),
           
           ElevatedButton(
-            onPressed: (_isAgreed && !_isLoading) ? _submitLoanRequest : null,
+            onPressed: (_isAgreed && !loanState.isLoading) ? () => _submitLoanRequest(draftData, user.id) : null,
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               backgroundColor: Colors.blueAccent,
               foregroundColor: Colors.white,
             ),
-            child: _isLoading 
+            child: loanState.isLoading 
                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                 : const Text('Ajukan Pinjaman Sekarang', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
