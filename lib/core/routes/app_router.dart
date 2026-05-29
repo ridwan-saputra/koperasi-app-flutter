@@ -5,6 +5,7 @@ import '../../features/dashboard/presentation/pages/admin_dashboard_page.dart';
 import '../../features/dashboard/presentation/pages/user_dashboard_page.dart';
 import '../../features/saving/presentation/pages/deposit_page.dart';
 import '../../features/saving/presentation/pages/history_page.dart';
+import '../../features/loan/presentation/pages/loan_form_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -24,6 +25,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/deposit',
       builder: (context, state) => const DepositPage(),
+    ),
+    GoRoute(
+      path: '/loan-form',
+      builder: (context, state) => const LoanFormPage(),
     ),
     GoRoute(
       path: '/history',
