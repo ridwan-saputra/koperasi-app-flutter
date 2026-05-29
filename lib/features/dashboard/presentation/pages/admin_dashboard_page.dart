@@ -8,7 +8,6 @@ import '../../../loan/domain/entities/loan_entity.dart';
 class AdminDashboardPage extends ConsumerWidget {
   const AdminDashboardPage({super.key});
 
-  // Fungsi memunculkan pop-up konfirmasi
   void _showActionDialog(BuildContext context, WidgetRef ref, LoanEntity loan, String adminId, bool isApprove) {
     final remarksController = TextEditingController();
     final actionText = isApprove ? 'Setujui' : 'Tolak';
@@ -27,33 +26,23 @@ class AdminDashboardPage extends ConsumerWidget {
             const SizedBox(height: 16),
             TextField(
               controller: remarksController,
-              decoration: const InputDecoration(
-                labelText: 'Catatan Admin (Opsional)',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Catatan Admin (Opsional)', border: OutlineInputBorder()),
               maxLines: 2,
             ),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: color, foregroundColor: Colors.white),
             onPressed: () async {
-              // Tutup dialog terlebih dahulu
               Navigator.pop(context);
-              
-              // Proses aksi melalui Riverpod
               final success = await ref.read(adminActionProvider.notifier).processLoan(
                 loanId: loan.id,
                 adminId: adminId,
                 status: status,
                 remarks: remarksController.text.isEmpty ? 'Diproses oleh Admin' : remarksController.text,
               );
-
               if (success && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Pinjaman berhasil di-$status'), backgroundColor: Colors.blueAccent),
@@ -79,6 +68,12 @@ class AdminDashboardPage extends ConsumerWidget {
         backgroundColor: Colors.blueGrey,
         foregroundColor: Colors.white,
         actions: [
+          // Tombol Baru untuk melihat Daftar Anggota
+          IconButton(
+            icon: const Icon(Icons.people_alt_rounded),
+            tooltip: 'Daftar Anggota',
+            onPressed: () => context.push('/admin-members'), 
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Keluar',
@@ -96,17 +91,13 @@ class AdminDashboardPage extends ConsumerWidget {
             error: (error, stack) => Center(child: Text('Terjadi kesalahan: $error')),
             data: (loans) {
               if (loans.isEmpty) {
-                return const Center(
-                  child: Text('Tidak ada antrean pengajuan pinjaman.', style: TextStyle(fontSize: 16, color: Colors.grey)),
-                );
+                return const Center(child: Text('Tidak ada antrean pengajuan pinjaman.', style: TextStyle(fontSize: 16, color: Colors.grey)));
               }
-
               return ListView.builder(
                 padding: const EdgeInsets.all(16.0),
                 itemCount: loans.length,
                 itemBuilder: (context, index) {
                   final loan = loans[index];
-                  
                   return Card(
                     elevation: 4,
                     margin: const EdgeInsets.only(bottom: 16.0),
@@ -164,8 +155,6 @@ class AdminDashboardPage extends ConsumerWidget {
               );
             },
           ),
-          
-          // Indikator loading transparan saat admin menekan tombol aksi
           if (isProcessing)
             Container(
               color: Colors.black.withValues(alpha: 0.3),
