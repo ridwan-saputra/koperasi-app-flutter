@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:go_router/go_router.dart';
+import '../providers/loan_draft_provider.dart';
 
 class LoanFormPage extends ConsumerStatefulWidget {
   const LoanFormPage({super.key});
@@ -74,7 +76,7 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
     }
   }
 
-  void _lanjutkanKeReview() {
+void _lanjutkanKeReview() {
     if (_formKey.currentState!.validate()) {
       if (_ktpImage == null || _selfieImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -83,10 +85,24 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
         return;
       }
 
-      // TODO: Simpan data ke State sementara (Tahap 2) dan pindah ke halaman Review
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Validasi sukses! Menuju tahap Review...'), backgroundColor: Colors.green),
-      );
+      // 1. Kumpulkan data dari form
+      final draftData = {
+        'nominal': double.parse(_nominalController.text),
+        'tenor': _tenorBulan,
+        'agunan': _isAgunanRequired ? _agunanController.text : null,
+        'alamat': _alamatController.text,
+        'pekerjaan': _pekerjaanController.text,
+        'pendapatan': double.parse(_pendapatanController.text),
+        'rekening': _rekeningController.text,
+        'ktpPath': _ktpImage!.path,
+        'selfiePath': _selfieImage!.path,
+      };
+
+      // 2. Simpan ke State Riverpod sementara
+      ref.read(loanDraftProvider.notifier).state = draftData;
+
+      // 3. Pindah ke Halaman Review
+      context.push('/loan-review');
     }
   }
 
