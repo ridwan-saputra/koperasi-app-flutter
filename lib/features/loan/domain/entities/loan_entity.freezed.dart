@@ -42,9 +42,7 @@ mixin _$LoanEntity {
   String get alamatTinggal => throw _privateConstructorUsedError;
   String get pekerjaan => throw _privateConstructorUsedError;
   @JsonKey(name: 'total_pendapatan')
-  double get totalPendapatan => throw _privateConstructorUsedError;
-  @JsonKey(name: 'rekening_tujuan')
-  String get rekeningTujuan => throw _privateConstructorUsedError;
+  double get totalPendapatan => throw _privateConstructorUsedError; // Field rekening_tujuan sudah resmi dihapus dari sistem
   @JsonKey(name: 'ktp_image_path')
   String get ktpImagePath => throw _privateConstructorUsedError;
   @JsonKey(name: 'selfie_image_path')
@@ -53,7 +51,7 @@ mixin _$LoanEntity {
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
-  DateTime get updatedAt => throw _privateConstructorUsedError; // Field tambahan untuk menampung nama dari tabel users (INNER JOIN)
+  DateTime get updatedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'nama_lengkap')
   String? get namaPeminjam => throw _privateConstructorUsedError;
 
@@ -87,7 +85,6 @@ abstract class $LoanEntityCopyWith<$Res> {
     @JsonKey(name: 'alamat_tinggal') String alamatTinggal,
     String pekerjaan,
     @JsonKey(name: 'total_pendapatan') double totalPendapatan,
-    @JsonKey(name: 'rekening_tujuan') String rekeningTujuan,
     @JsonKey(name: 'ktp_image_path') String ktpImagePath,
     @JsonKey(name: 'selfie_image_path') String selfieImagePath,
     String status,
@@ -124,7 +121,6 @@ class _$LoanEntityCopyWithImpl<$Res, $Val extends LoanEntity>
     Object? alamatTinggal = null,
     Object? pekerjaan = null,
     Object? totalPendapatan = null,
-    Object? rekeningTujuan = null,
     Object? ktpImagePath = null,
     Object? selfieImagePath = null,
     Object? status = null,
@@ -182,10 +178,6 @@ class _$LoanEntityCopyWithImpl<$Res, $Val extends LoanEntity>
                 ? _value.totalPendapatan
                 : totalPendapatan // ignore: cast_nullable_to_non_nullable
                       as double,
-            rekeningTujuan: null == rekeningTujuan
-                ? _value.rekeningTujuan
-                : rekeningTujuan // ignore: cast_nullable_to_non_nullable
-                      as String,
             ktpImagePath: null == ktpImagePath
                 ? _value.ktpImagePath
                 : ktpImagePath // ignore: cast_nullable_to_non_nullable
@@ -238,7 +230,6 @@ abstract class _$$LoanEntityImplCopyWith<$Res>
     @JsonKey(name: 'alamat_tinggal') String alamatTinggal,
     String pekerjaan,
     @JsonKey(name: 'total_pendapatan') double totalPendapatan,
-    @JsonKey(name: 'rekening_tujuan') String rekeningTujuan,
     @JsonKey(name: 'ktp_image_path') String ktpImagePath,
     @JsonKey(name: 'selfie_image_path') String selfieImagePath,
     String status,
@@ -274,7 +265,6 @@ class __$$LoanEntityImplCopyWithImpl<$Res>
     Object? alamatTinggal = null,
     Object? pekerjaan = null,
     Object? totalPendapatan = null,
-    Object? rekeningTujuan = null,
     Object? ktpImagePath = null,
     Object? selfieImagePath = null,
     Object? status = null,
@@ -332,10 +322,6 @@ class __$$LoanEntityImplCopyWithImpl<$Res>
             ? _value.totalPendapatan
             : totalPendapatan // ignore: cast_nullable_to_non_nullable
                   as double,
-        rekeningTujuan: null == rekeningTujuan
-            ? _value.rekeningTujuan
-            : rekeningTujuan // ignore: cast_nullable_to_non_nullable
-                  as String,
         ktpImagePath: null == ktpImagePath
             ? _value.ktpImagePath
             : ktpImagePath // ignore: cast_nullable_to_non_nullable
@@ -381,7 +367,6 @@ class _$LoanEntityImpl implements _LoanEntity {
     @JsonKey(name: 'alamat_tinggal') required this.alamatTinggal,
     required this.pekerjaan,
     @JsonKey(name: 'total_pendapatan') required this.totalPendapatan,
-    @JsonKey(name: 'rekening_tujuan') required this.rekeningTujuan,
     @JsonKey(name: 'ktp_image_path') required this.ktpImagePath,
     @JsonKey(name: 'selfie_image_path') required this.selfieImagePath,
     required this.status,
@@ -427,9 +412,7 @@ class _$LoanEntityImpl implements _LoanEntity {
   @override
   @JsonKey(name: 'total_pendapatan')
   final double totalPendapatan;
-  @override
-  @JsonKey(name: 'rekening_tujuan')
-  final String rekeningTujuan;
+  // Field rekening_tujuan sudah resmi dihapus dari sistem
   @override
   @JsonKey(name: 'ktp_image_path')
   final String ktpImagePath;
@@ -444,14 +427,13 @@ class _$LoanEntityImpl implements _LoanEntity {
   @override
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
-  // Field tambahan untuk menampung nama dari tabel users (INNER JOIN)
   @override
   @JsonKey(name: 'nama_lengkap')
   final String? namaPeminjam;
 
   @override
   String toString() {
-    return 'LoanEntity(id: $id, userId: $userId, nominalPokok: $nominalPokok, tenorBulan: $tenorBulan, bungaPersen: $bungaPersen, biayaAdmin: $biayaAdmin, totalBayar: $totalBayar, cicilanPerBulan: $cicilanPerBulan, agunanDetail: $agunanDetail, alamatTinggal: $alamatTinggal, pekerjaan: $pekerjaan, totalPendapatan: $totalPendapatan, rekeningTujuan: $rekeningTujuan, ktpImagePath: $ktpImagePath, selfieImagePath: $selfieImagePath, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, namaPeminjam: $namaPeminjam)';
+    return 'LoanEntity(id: $id, userId: $userId, nominalPokok: $nominalPokok, tenorBulan: $tenorBulan, bungaPersen: $bungaPersen, biayaAdmin: $biayaAdmin, totalBayar: $totalBayar, cicilanPerBulan: $cicilanPerBulan, agunanDetail: $agunanDetail, alamatTinggal: $alamatTinggal, pekerjaan: $pekerjaan, totalPendapatan: $totalPendapatan, ktpImagePath: $ktpImagePath, selfieImagePath: $selfieImagePath, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, namaPeminjam: $namaPeminjam)';
   }
 
   @override
@@ -481,8 +463,6 @@ class _$LoanEntityImpl implements _LoanEntity {
                 other.pekerjaan == pekerjaan) &&
             (identical(other.totalPendapatan, totalPendapatan) ||
                 other.totalPendapatan == totalPendapatan) &&
-            (identical(other.rekeningTujuan, rekeningTujuan) ||
-                other.rekeningTujuan == rekeningTujuan) &&
             (identical(other.ktpImagePath, ktpImagePath) ||
                 other.ktpImagePath == ktpImagePath) &&
             (identical(other.selfieImagePath, selfieImagePath) ||
@@ -498,7 +478,7 @@ class _$LoanEntityImpl implements _LoanEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hashAll([
+  int get hashCode => Object.hash(
     runtimeType,
     id,
     userId,
@@ -512,14 +492,13 @@ class _$LoanEntityImpl implements _LoanEntity {
     alamatTinggal,
     pekerjaan,
     totalPendapatan,
-    rekeningTujuan,
     ktpImagePath,
     selfieImagePath,
     status,
     createdAt,
     updatedAt,
     namaPeminjam,
-  ]);
+  );
 
   /// Create a copy of LoanEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -549,7 +528,6 @@ abstract class _LoanEntity implements LoanEntity {
     @JsonKey(name: 'alamat_tinggal') required final String alamatTinggal,
     required final String pekerjaan,
     @JsonKey(name: 'total_pendapatan') required final double totalPendapatan,
-    @JsonKey(name: 'rekening_tujuan') required final String rekeningTujuan,
     @JsonKey(name: 'ktp_image_path') required final String ktpImagePath,
     @JsonKey(name: 'selfie_image_path') required final String selfieImagePath,
     required final String status,
@@ -594,10 +572,7 @@ abstract class _LoanEntity implements LoanEntity {
   String get pekerjaan;
   @override
   @JsonKey(name: 'total_pendapatan')
-  double get totalPendapatan;
-  @override
-  @JsonKey(name: 'rekening_tujuan')
-  String get rekeningTujuan;
+  double get totalPendapatan; // Field rekening_tujuan sudah resmi dihapus dari sistem
   @override
   @JsonKey(name: 'ktp_image_path')
   String get ktpImagePath;
@@ -611,7 +586,7 @@ abstract class _LoanEntity implements LoanEntity {
   DateTime get createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  DateTime get updatedAt; // Field tambahan untuk menampung nama dari tabel users (INNER JOIN)
+  DateTime get updatedAt;
   @override
   @JsonKey(name: 'nama_lengkap')
   String? get namaPeminjam;

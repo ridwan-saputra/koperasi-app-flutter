@@ -23,11 +23,10 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
     final int tenor = draftData['tenor'];
 
     // Hitung rincian finansial murni dari Domain Logic
-    // final totalBunga = LoanCalculator.hitungTotalBunga(nominal, tenor);
     final totalBayar = LoanCalculator.hitungTotalBayar(nominal, tenor);
     final cicilan = LoanCalculator.hitungCicilanPerBulan(nominal, tenor);
 
-    // Bungkus semua data menjadi satu objek LoanEntity yang utuh
+    // Bungkus semua data menjadi satu objek LoanEntity yang utuh (Tanpa rekening_tujuan)
     final finalLoan = LoanEntity(
       id: const Uuid().v4(),
       userId: userId,
@@ -41,7 +40,6 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
       alamatTinggal: draftData['alamat'],
       pekerjaan: draftData['pekerjaan'],
       totalPendapatan: draftData['pendapatan'],
-      rekeningTujuan: draftData['rekening'],
       ktpImagePath: draftData['ktpPath'],
       selfieImagePath: draftData['selfiePath'],
       status: 'PENDING', // Status default saat pertama diajukan

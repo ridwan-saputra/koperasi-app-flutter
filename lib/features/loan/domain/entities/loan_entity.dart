@@ -18,13 +18,12 @@ class LoanEntity with _$LoanEntity {
     @JsonKey(name: 'alamat_tinggal') required String alamatTinggal,
     required String pekerjaan,
     @JsonKey(name: 'total_pendapatan') required double totalPendapatan,
-    @JsonKey(name: 'rekening_tujuan') required String rekeningTujuan,
+    // Field rekening_tujuan sudah resmi dihapus dari sistem
     @JsonKey(name: 'ktp_image_path') required String ktpImagePath,
     @JsonKey(name: 'selfie_image_path') required String selfieImagePath,
     required String status, 
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
-    // Field tambahan untuk menampung nama dari tabel users (INNER JOIN)
     @JsonKey(name: 'nama_lengkap') String? namaPeminjam, 
   }) = _LoanEntity;
 

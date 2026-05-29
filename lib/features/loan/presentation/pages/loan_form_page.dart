@@ -18,7 +18,6 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
   final _alamatController = TextEditingController();
   final _pekerjaanController = TextEditingController();
   final _pendapatanController = TextEditingController();
-  final _rekeningController = TextEditingController();
   final _agunanController = TextEditingController();
   
   int _tenorBulan = 6; // Default tenor
@@ -39,7 +38,6 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
     _alamatController.dispose();
     _pekerjaanController.dispose();
     _pendapatanController.dispose();
-    _rekeningController.dispose();
     _agunanController.dispose();
     super.dispose();
   }
@@ -76,7 +74,7 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
     }
   }
 
-void _lanjutkanKeReview() {
+  void _lanjutkanKeReview() {
     if (_formKey.currentState!.validate()) {
       if (_ktpImage == null || _selfieImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +83,7 @@ void _lanjutkanKeReview() {
         return;
       }
 
-      // 1. Kumpulkan data dari form
+      // 1. Kumpulkan data dari form (Rekening tujuan sudah dihapus)
       final draftData = {
         'nominal': double.parse(_nominalController.text),
         'tenor': _tenorBulan,
@@ -93,7 +91,6 @@ void _lanjutkanKeReview() {
         'alamat': _alamatController.text,
         'pekerjaan': _pekerjaanController.text,
         'pendapatan': double.parse(_pendapatanController.text),
-        'rekening': _rekeningController.text,
         'ktpPath': _ktpImage!.path,
         'selfiePath': _selfieImage!.path,
       };
@@ -175,36 +172,7 @@ void _lanjutkanKeReview() {
 
             const SizedBox(height: 32),
 
-            // --- 3. REKENING TUJUAN ---
-            const Text('Rekening Pencairan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: Colors.amber.shade100, borderRadius: BorderRadius.circular(8)),
-              child: const Row(
-                children: [
-                  Icon(Icons.warning_amber_rounded, color: Colors.orange),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'PENTING: Pastikan nama rekening tujuan sama dengan nama KTP Anda untuk menghindari fraud.',
-                      style: TextStyle(fontSize: 12, color: Colors.black87),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _rekeningController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Nomor Rekening', border: OutlineInputBorder()),
-              validator: (value) => (value == null || value.isEmpty) ? 'Wajib diisi' : null,
-            ),
-
-            const SizedBox(height: 32),
-
-            // --- 4. DOKUMEN ---
+            // --- 3. DOKUMEN ---
             const Text('Dokumen (Foto)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             Row(
