@@ -26,6 +26,7 @@ _$LoanEntityImpl _$$LoanEntityImplFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
+      namaPeminjam: json['nama_lengkap'] as String?,
     );
 
 Map<String, dynamic> _$$LoanEntityImplToJson(_$LoanEntityImpl instance) =>
@@ -48,4 +49,5 @@ Map<String, dynamic> _$$LoanEntityImplToJson(_$LoanEntityImpl instance) =>
       'status': instance.status,
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
+      'nama_lengkap': instance.namaPeminjam,
     };

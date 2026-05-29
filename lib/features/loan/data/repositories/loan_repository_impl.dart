@@ -15,7 +15,12 @@ class LoanRepositoryImpl implements LoanRepository {
   Future<Either<Failure, LoanEntity>> applyLoan(LoanEntity loan) async {
     try {
       final db = await dbHelper.database;
-      await db.insert('loans', loan.toJson());
+      
+      // Karena kita pakai Freezed, pastikan namaPeminjam tidak ikut ter-insert ke tabel loans
+      final Map<String, dynamic> loanData = loan.toJson();
+      loanData.remove('nama_lengkap'); 
+
+      await db.insert('loans', loanData);
       return Right(loan);
     } catch (e) {
       return Left(DatabaseFailure('Gagal mengajukan pinjaman: ${e.toString()}'));
@@ -26,13 +31,17 @@ class LoanRepositoryImpl implements LoanRepository {
   Future<Either<Failure, List<LoanEntity>>> getPendingLoans() async {
     try {
       final db = await dbHelper.database;
-      final List<Map<String, dynamic>> maps = await db.query(
-        'loans',
-        where: 'status = ?',
-        whereArgs: ['PENDING'],
-        orderBy: 'created_at ASC', 
-      );
-      final List<LoanEntity> loans = maps.map((map) => LoanEntity.fromJson(map)).toList();
+      
+      // Menggunakan INNER JOIN untuk menarik nama_lengkap anggota
+      final List<Map<String, dynamic>> results = await db.rawQuery('''
+        SELECT loans.*, users.nama_lengkap 
+        FROM loans
+        INNER JOIN users ON loans.user_id = users.id
+        WHERE loans.status = 'PENDING'
+        ORDER BY loans.created_at ASC
+      ''');
+
+      final List<LoanEntity> loans = results.map((map) => LoanEntity.fromJson(map)).toList();
       return Right(loans);
     } catch (e) {
       return Left(DatabaseFailure('Gagal memuat daftar antrean pinjaman: ${e.toString()}'));

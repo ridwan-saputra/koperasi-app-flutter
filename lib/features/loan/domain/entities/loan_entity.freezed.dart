@@ -37,7 +37,7 @@ mixin _$LoanEntity {
   @JsonKey(name: 'cicilan_per_bulan')
   double get cicilanPerBulan => throw _privateConstructorUsedError;
   @JsonKey(name: 'agunan_detail')
-  String? get agunanDetail => throw _privateConstructorUsedError; // Nullable karena hanya wajib jika > 5 juta
+  String? get agunanDetail => throw _privateConstructorUsedError;
   @JsonKey(name: 'alamat_tinggal')
   String get alamatTinggal => throw _privateConstructorUsedError;
   String get pekerjaan => throw _privateConstructorUsedError;
@@ -49,12 +49,13 @@ mixin _$LoanEntity {
   String get ktpImagePath => throw _privateConstructorUsedError;
   @JsonKey(name: 'selfie_image_path')
   String get selfieImagePath => throw _privateConstructorUsedError;
-  String get status =>
-      throw _privateConstructorUsedError; // PENDING, APPROVED, REJECTED
+  String get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
-  DateTime get updatedAt => throw _privateConstructorUsedError;
+  DateTime get updatedAt => throw _privateConstructorUsedError; // Field tambahan untuk menampung nama dari tabel users (INNER JOIN)
+  @JsonKey(name: 'nama_lengkap')
+  String? get namaPeminjam => throw _privateConstructorUsedError;
 
   /// Serializes this LoanEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -92,6 +93,7 @@ abstract class $LoanEntityCopyWith<$Res> {
     String status,
     @JsonKey(name: 'created_at') DateTime createdAt,
     @JsonKey(name: 'updated_at') DateTime updatedAt,
+    @JsonKey(name: 'nama_lengkap') String? namaPeminjam,
   });
 }
 
@@ -128,6 +130,7 @@ class _$LoanEntityCopyWithImpl<$Res, $Val extends LoanEntity>
     Object? status = null,
     Object? createdAt = null,
     Object? updatedAt = null,
+    Object? namaPeminjam = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -203,6 +206,10 @@ class _$LoanEntityCopyWithImpl<$Res, $Val extends LoanEntity>
                 ? _value.updatedAt
                 : updatedAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
+            namaPeminjam: freezed == namaPeminjam
+                ? _value.namaPeminjam
+                : namaPeminjam // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -237,6 +244,7 @@ abstract class _$$LoanEntityImplCopyWith<$Res>
     String status,
     @JsonKey(name: 'created_at') DateTime createdAt,
     @JsonKey(name: 'updated_at') DateTime updatedAt,
+    @JsonKey(name: 'nama_lengkap') String? namaPeminjam,
   });
 }
 
@@ -272,6 +280,7 @@ class __$$LoanEntityImplCopyWithImpl<$Res>
     Object? status = null,
     Object? createdAt = null,
     Object? updatedAt = null,
+    Object? namaPeminjam = freezed,
   }) {
     return _then(
       _$LoanEntityImpl(
@@ -347,6 +356,10 @@ class __$$LoanEntityImplCopyWithImpl<$Res>
             ? _value.updatedAt
             : updatedAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
+        namaPeminjam: freezed == namaPeminjam
+            ? _value.namaPeminjam
+            : namaPeminjam // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -374,6 +387,7 @@ class _$LoanEntityImpl implements _LoanEntity {
     required this.status,
     @JsonKey(name: 'created_at') required this.createdAt,
     @JsonKey(name: 'updated_at') required this.updatedAt,
+    @JsonKey(name: 'nama_lengkap') this.namaPeminjam,
   });
 
   factory _$LoanEntityImpl.fromJson(Map<String, dynamic> json) =>
@@ -405,7 +419,6 @@ class _$LoanEntityImpl implements _LoanEntity {
   @override
   @JsonKey(name: 'agunan_detail')
   final String? agunanDetail;
-  // Nullable karena hanya wajib jika > 5 juta
   @override
   @JsonKey(name: 'alamat_tinggal')
   final String alamatTinggal;
@@ -425,17 +438,20 @@ class _$LoanEntityImpl implements _LoanEntity {
   final String selfieImagePath;
   @override
   final String status;
-  // PENDING, APPROVED, REJECTED
   @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @override
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
+  // Field tambahan untuk menampung nama dari tabel users (INNER JOIN)
+  @override
+  @JsonKey(name: 'nama_lengkap')
+  final String? namaPeminjam;
 
   @override
   String toString() {
-    return 'LoanEntity(id: $id, userId: $userId, nominalPokok: $nominalPokok, tenorBulan: $tenorBulan, bungaPersen: $bungaPersen, biayaAdmin: $biayaAdmin, totalBayar: $totalBayar, cicilanPerBulan: $cicilanPerBulan, agunanDetail: $agunanDetail, alamatTinggal: $alamatTinggal, pekerjaan: $pekerjaan, totalPendapatan: $totalPendapatan, rekeningTujuan: $rekeningTujuan, ktpImagePath: $ktpImagePath, selfieImagePath: $selfieImagePath, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'LoanEntity(id: $id, userId: $userId, nominalPokok: $nominalPokok, tenorBulan: $tenorBulan, bungaPersen: $bungaPersen, biayaAdmin: $biayaAdmin, totalBayar: $totalBayar, cicilanPerBulan: $cicilanPerBulan, agunanDetail: $agunanDetail, alamatTinggal: $alamatTinggal, pekerjaan: $pekerjaan, totalPendapatan: $totalPendapatan, rekeningTujuan: $rekeningTujuan, ktpImagePath: $ktpImagePath, selfieImagePath: $selfieImagePath, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, namaPeminjam: $namaPeminjam)';
   }
 
   @override
@@ -475,12 +491,14 @@ class _$LoanEntityImpl implements _LoanEntity {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.updatedAt == updatedAt) &&
+            (identical(other.namaPeminjam, namaPeminjam) ||
+                other.namaPeminjam == namaPeminjam));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     id,
     userId,
@@ -500,7 +518,8 @@ class _$LoanEntityImpl implements _LoanEntity {
     status,
     createdAt,
     updatedAt,
-  );
+    namaPeminjam,
+  ]);
 
   /// Create a copy of LoanEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -536,6 +555,7 @@ abstract class _LoanEntity implements LoanEntity {
     required final String status,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
     @JsonKey(name: 'updated_at') required final DateTime updatedAt,
+    @JsonKey(name: 'nama_lengkap') final String? namaPeminjam,
   }) = _$LoanEntityImpl;
 
   factory _LoanEntity.fromJson(Map<String, dynamic> json) =
@@ -566,7 +586,7 @@ abstract class _LoanEntity implements LoanEntity {
   double get cicilanPerBulan;
   @override
   @JsonKey(name: 'agunan_detail')
-  String? get agunanDetail; // Nullable karena hanya wajib jika > 5 juta
+  String? get agunanDetail;
   @override
   @JsonKey(name: 'alamat_tinggal')
   String get alamatTinggal;
@@ -585,13 +605,16 @@ abstract class _LoanEntity implements LoanEntity {
   @JsonKey(name: 'selfie_image_path')
   String get selfieImagePath;
   @override
-  String get status; // PENDING, APPROVED, REJECTED
+  String get status;
   @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  DateTime get updatedAt;
+  DateTime get updatedAt; // Field tambahan untuk menampung nama dari tabel users (INNER JOIN)
+  @override
+  @JsonKey(name: 'nama_lengkap')
+  String? get namaPeminjam;
 
   /// Create a copy of LoanEntity
   /// with the given fields replaced by the non-null parameter values.
