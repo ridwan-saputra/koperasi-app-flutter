@@ -126,15 +126,14 @@ _buildMenuButton(
                     context.push('/deposit');
                   },
                 ),
-                _buildMenuButton(
+_buildMenuButton(
                   context,
                   icon: Icons.money_off_rounded,
                   label: 'Pinjam',
                   color: Colors.orange,
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Fitur Pinjam belum tersedia')),
-                    );
+                    // Pindah ke halaman form pengajuan pinjaman
+                    context.push('/loan-form');
                   },
                 ),
 _buildMenuButton(
