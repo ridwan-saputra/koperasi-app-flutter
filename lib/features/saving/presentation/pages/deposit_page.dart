@@ -24,42 +24,126 @@ class _DepositPageState extends ConsumerState<DepositPage> {
     super.dispose();
   }
 
-  Future<void> _handleDeposit() async {
+  // Langkah 1: Validasi input dan munculkan QRIS
+  void _handleLanjutPembayaran() {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-
-      // Ambil data user yang sedang aktif
-      final user = ref.read(authNotifierProvider).value;
+      // Sembunyikan keyboard
+      FocusScope.of(context).unfocus(); 
       
-      if (user != null) {
-        // Buat objek transaksi baru
-        final newTransaction = TransactionEntity(
-          id: const Uuid().v4(),
-          userId: user.id,
-          type: 'DEPOSIT',
-          nominal: double.parse(_nominalController.text),
-          status: 'SUCCESS', // Di sistem nyata, status awal biasanya PENDING
-          createdAt: DateTime.now(),
+      final nominal = double.parse(_nominalController.text);
+      _showQrisSimulation(nominal);
+    }
+  }
+
+  // Langkah 2: Proses penyimpanan ke SQLite setelah QRIS disetujui
+  Future<void> _processDeposit(double nominal) async {
+    setState(() => _isLoading = true);
+
+    final user = ref.read(authNotifierProvider).value;
+    
+    if (user != null) {
+      final newTransaction = TransactionEntity(
+        id: const Uuid().v4(),
+        userId: user.id,
+        type: 'DEPOSIT',
+        nominal: nominal,
+        status: 'SUCCESS', // Karena ini disimulasikan berhasil
+        createdAt: DateTime.now(),
+      );
+
+      final success = await ref.read(balanceNotifierProvider.notifier).makeDeposit(newTransaction);
+
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Pembayaran QRIS Berhasil! Saldo ditambahkan.'), backgroundColor: Colors.green),
         );
-
-        // Eksekusi fungsi deposit di provider
-        final success = await ref.read(balanceNotifierProvider.notifier).makeDeposit(newTransaction);
-
-        if (success && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Simpanan berhasil ditambahkan!'), backgroundColor: Colors.green),
-          );
-          // Kembali ke halaman sebelumnya (Dashboard)
-          context.pop();
-        } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Transaksi gagal diproses.'), backgroundColor: Colors.redAccent),
-          );
-        }
+        // Kembali ke dashboard (menutup dialog QRIS dan halaman Deposit sekaligus)
+        context.go('/user-dashboard');
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transaksi gagal diproses.'), backgroundColor: Colors.redAccent),
+        );
       }
-      
+    }
+    
+    if (mounted) {
       setState(() => _isLoading = false);
     }
+  }
+
+  // Tampilan UI Bottom Sheet untuk QRIS
+  void _showQrisSimulation(double nominal) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false, // Wajib menekan tombol untuk keluar
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Scan QRIS untuk Membayar',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Total: Rp ${nominal.toStringAsFixed(0)}',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+              ),
+              const SizedBox(height: 24),
+              // Simulasi gambar QR Code menggunakan Icon
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    )
+                  ],
+                ),
+                child: const Icon(
+                  Icons.qr_code_2_rounded,
+                  size: 200,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : () => _processDeposit(nominal),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('Simulasi Pembayaran Berhasil', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () {
+                  // Membatalkan pembayaran
+                  Navigator.pop(context);
+                },
+                child: const Text('Batalkan', style: TextStyle(color: Colors.redAccent)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -97,15 +181,13 @@ class _DepositPageState extends ConsumerState<DepositPage> {
               ),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: _isLoading ? null : _handleDeposit,
+                onPressed: _handleLanjutPembayaran,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.blueAccent,
                   foregroundColor: Colors.white,
                 ),
-                child: _isLoading
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text('Simpan Sekarang', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                child: const Text('Lanjut Pembayaran', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ],
           ),
