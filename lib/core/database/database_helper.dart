@@ -49,6 +49,35 @@ Future _createDB(Database db, int version) async {
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
     ''');
+
+    // ... (Kode pembuatan tabel users dan transactions sebelumnya) ...
+
+    // 3. Membuat tabel loans (Pinjaman)
+    await db.execute('''
+      CREATE TABLE loans (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        nominal_pokok REAL NOT NULL,
+        tenor_bulan INTEGER NOT NULL,
+        bunga_persen REAL NOT NULL,
+        biaya_admin REAL NOT NULL,
+        total_bayar REAL NOT NULL,
+        cicilan_per_bulan REAL NOT NULL,
+        agunan_detail TEXT,
+        alamat_tinggal TEXT NOT NULL,
+        pekerjaan TEXT NOT NULL,
+        total_pendapatan REAL NOT NULL,
+        rekening_tujuan TEXT NOT NULL,
+        ktp_image_path TEXT NOT NULL,
+        selfie_image_path TEXT NOT NULL,
+        status TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      )
+    ''');
+    
+    // ... (Kode INSERT akun Admin Default) ...
     
     // 3. Akun Admin Default (Predefined)
     await db.execute('''
