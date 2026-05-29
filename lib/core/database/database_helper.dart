@@ -76,6 +76,20 @@ Future _createDB(Database db, int version) async {
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
     ''');
+
+    // 4. Membuat tabel admin_actions (Audit Trail)
+    await db.execute('''
+      CREATE TABLE admin_actions (
+        id TEXT PRIMARY KEY,
+        admin_id TEXT NOT NULL,
+        loan_id TEXT NOT NULL,
+        action TEXT NOT NULL,
+        remarks TEXT,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (admin_id) REFERENCES users (id),
+        FOREIGN KEY (loan_id) REFERENCES loans (id) ON DELETE CASCADE
+      )
+    ''');
     
     // ... (Kode INSERT akun Admin Default) ...
     
