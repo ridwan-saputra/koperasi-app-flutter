@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -86,7 +87,7 @@ class _UserDashboardPageState extends ConsumerState<UserDashboardPage> {
                     // Menampilkan UI berdasarkan status pengambilan data (Loading/Data/Error)
                     balanceState.when(
                       data: (balance) => Text(
-                        'Rp ${balance.toStringAsFixed(0)}',
+                        CurrencyFormatter.format(balance),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 36,

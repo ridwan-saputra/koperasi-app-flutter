@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../saving/presentation/providers/saving_provider.dart';
 import '../../domain/entities/loan_entity.dart';
@@ -25,11 +25,6 @@ class _InstallmentPaymentPageState extends ConsumerState<InstallmentPaymentPage>
     });
   }
 
-  String _formatRupiah(double number) {
-    return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
-        .format(number);
-  }
-
   void _confirmPayment(
     BuildContext context,
     LoanEntity loan,
@@ -45,12 +40,12 @@ class _InstallmentPaymentPageState extends ConsumerState<InstallmentPaymentPage>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Pinjaman: ${_formatRupiah(loan.nominalPokok)}'),
+            Text('Pinjaman: ${CurrencyFormatter.format(loan.nominalPokok)}'),
             const SizedBox(height: 8),
             Text('Cicilan ke-${paidCount + 1} dari ${loan.tenorBulan}'),
             const SizedBox(height: 8),
             Text(
-              'Nominal: ${_formatRupiah(loan.cicilanPerBulan)}',
+              'Nominal: ${CurrencyFormatter.format(loan.cicilanPerBulan)}',
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             const SizedBox(height: 8),
@@ -143,7 +138,7 @@ class _InstallmentPaymentPageState extends ConsumerState<InstallmentPaymentPage>
                     const SizedBox(height: 4),
                     balanceState.when(
                       data: (balance) => Text(
-                        _formatRupiah(balance),
+                        CurrencyFormatter.format(balance),
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -203,7 +198,7 @@ class _InstallmentPaymentPageState extends ConsumerState<InstallmentPaymentPage>
                           data: (paidCount) => _LoanInstallmentCard(
                             loan: loan,
                             paidCount: paidCount,
-                            formatRupiah: _formatRupiah,
+                            formatRupiah: CurrencyFormatter.format,
                             onPay: () => _confirmPayment(context, loan, user.id, paidCount),
                           ),
                         );

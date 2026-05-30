@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/database/database_helper.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../saving/domain/entities/transaction_entity.dart';
 import '../../domain/entities/loan_entity.dart';
@@ -210,7 +211,7 @@ class LoanRepositoryImpl implements LoanRepository {
         final balance = (balanceResult.first['total'] as num?)?.toDouble() ?? 0;
         if (balance < loan.cicilanPerBulan) {
           failure = DatabaseFailure(
-            'Saldo tidak mencukupi. Diperlukan Rp ${loan.cicilanPerBulan.toStringAsFixed(0)}.',
+            'Saldo tidak mencukupi. Diperlukan ${CurrencyFormatter.format(loan.cicilanPerBulan)}.',
           );
           return;
         }

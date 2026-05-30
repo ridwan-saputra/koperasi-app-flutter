@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
@@ -105,13 +106,13 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
           ),
           const SizedBox(height: 32),
           
-          _buildDetailRow('Nominal Pinjaman', 'Rp ${nominal.toStringAsFixed(0)}'),
+          _buildDetailRow('Nominal Pinjaman', CurrencyFormatter.format(nominal)),
           _buildDetailRow('Tenor', '$tenor Bulan'),
-          _buildDetailRow('Bunga (2%/Bulan)', 'Rp ${totalBunga.toStringAsFixed(0)}'),
-          _buildDetailRow('Biaya Admin', 'Rp ${LoanCalculator.biayaAdminTetap.toStringAsFixed(0)}'),
+          _buildDetailRow('Bunga (2%/Bulan)', CurrencyFormatter.format(totalBunga)),
+          _buildDetailRow('Biaya Admin', CurrencyFormatter.format(LoanCalculator.biayaAdminTetap)),
           const Divider(height: 32, thickness: 2),
           
-          _buildDetailRow('Total Harus Dibayar', 'Rp ${totalBayar.toStringAsFixed(0)}', isBold: true),
+          _buildDetailRow('Total Harus Dibayar', CurrencyFormatter.format(totalBayar), isBold: true),
           
           const SizedBox(height: 16),
           Container(
@@ -122,7 +123,7 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
                 const Text('Estimasi Cicilan per Bulan', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 Text(
-                  'Rp ${cicilan.toStringAsFixed(0)}',
+                  CurrencyFormatter.format(cicilan),
                   style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.green),
                 ),
               ],

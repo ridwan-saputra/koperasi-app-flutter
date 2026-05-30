@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/saving_provider.dart';
 
@@ -77,7 +78,7 @@ class HistoryPage extends ConsumerWidget {
                   subtitle: Text(subtitle),
                   isThreeLine: isCicilan && trx.loanId != null,
                   trailing: Text(
-                    '${isDeposit ? '+' : '-'} Rp ${trx.nominal.toStringAsFixed(0)}',
+                    '${isDeposit ? '+' : '-'} ${CurrencyFormatter.format(trx.nominal)}',
                     style: TextStyle(
                       color: isDeposit ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,

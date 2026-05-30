@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/utils/currency_formatter.dart';
+import '../../../../core/utils/rupiah_input_formatter.dart';
+import '../../domain/constants/loan_amount_options.dart';
 import '../providers/loan_draft_provider.dart';
 
 class LoanFormPage extends ConsumerStatefulWidget {
@@ -14,27 +18,20 @@ class LoanFormPage extends ConsumerStatefulWidget {
 
 class _LoanFormPageState extends ConsumerState<LoanFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nominalController = TextEditingController();
   final _alamatController = TextEditingController();
   final _pekerjaanController = TextEditingController();
   final _pendapatanController = TextEditingController();
   final _agunanController = TextEditingController();
-  
-  int _tenorBulan = 6; // Default tenor
+
+  double _selectedNominal = kLoanAmountOptions.first;
+  int _tenorBulan = 6;
   File? _ktpImage;
   File? _selfieImage;
-  bool _isAgunanRequired = false;
 
-  @override
-  void initState() {
-    super.initState();
-    // Memantau input nominal untuk memunculkan kolom agunan secara otomatis
-    _nominalController.addListener(_checkAgunanRequirement);
-  }
+  bool get _isAgunanRequired => _selectedNominal > kLoanAgunanThreshold;
 
   @override
   void dispose() {
-    _nominalController.dispose();
     _alamatController.dispose();
     _pekerjaanController.dispose();
     _pendapatanController.dispose();
@@ -42,27 +39,10 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
     super.dispose();
   }
 
-  void _checkAgunanRequirement() {
-    final text = _nominalController.text;
-    if (text.isNotEmpty) {
-      final nominal = double.tryParse(text) ?? 0;
-      final isRequired = nominal > 5000000;
-      if (_isAgunanRequired != isRequired) {
-        setState(() {
-          _isAgunanRequired = isRequired;
-        });
-      }
-    } else if (_isAgunanRequired) {
-      setState(() {
-        _isAgunanRequired = false;
-      });
-    }
-  }
-
   Future<void> _pickImage(bool isKtp) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 70);
-    
+
     if (pickedFile != null) {
       setState(() {
         if (isKtp) {
@@ -78,27 +58,31 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
     if (_formKey.currentState!.validate()) {
       if (_ktpImage == null || _selfieImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Harap unggah foto KTP dan Selfie'), backgroundColor: Colors.redAccent),
+          const SnackBar(
+            content: Text('Harap unggah foto KTP dan Selfie'),
+            backgroundColor: Colors.redAccent,
+          ),
         );
         return;
       }
 
-      // 1. Kumpulkan data dari form (Rekening tujuan sudah dihapus)
+      final pendapatan = CurrencyFormatter.parse(_pendapatanController.text);
+      if (pendapatan == null) {
+        return;
+      }
+
       final draftData = {
-        'nominal': double.parse(_nominalController.text),
+        'nominal': _selectedNominal,
         'tenor': _tenorBulan,
         'agunan': _isAgunanRequired ? _agunanController.text : null,
         'alamat': _alamatController.text,
         'pekerjaan': _pekerjaanController.text,
-        'pendapatan': double.parse(_pendapatanController.text),
+        'pendapatan': pendapatan,
         'ktpPath': _ktpImage!.path,
         'selfiePath': _selfieImage!.path,
       };
 
-      // 2. Simpan ke State Riverpod sementara
       ref.read(loanDraftProvider.notifier).state = draftData;
-
-      // 3. Pindah ke Halaman Review
       context.push('/loan-review');
     }
   }
@@ -112,14 +96,26 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
         child: ListView(
           padding: const EdgeInsets.all(24.0),
           children: [
-            // --- 1. DATA PINJAMAN ---
             const Text('Data Pinjaman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _nominalController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Nominal Pinjaman (Rp)', border: OutlineInputBorder()),
-              validator: (value) => (value == null || value.isEmpty) ? 'Wajib diisi' : null,
+            DropdownButtonFormField<double>(
+              value: _selectedNominal,
+              decoration: const InputDecoration(
+                labelText: 'Nominal Pinjaman',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.payments_outlined),
+              ),
+              items: kLoanAmountOptions.map((amount) {
+                return DropdownMenuItem(
+                  value: amount,
+                  child: Text(CurrencyFormatter.format(amount)),
+                );
+              }).toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() => _selectedNominal = value);
+                }
+              },
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<int>(
@@ -130,15 +126,15 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
               }).toList(),
               onChanged: (value) => setState(() => _tenorBulan = value!),
             ),
-            
-            // Kolom Agunan Dinamis
+
             if (_isAgunanRequired) ...[
               const SizedBox(height: 16),
               TextFormField(
                 controller: _agunanController,
-                decoration: const InputDecoration(
-                  labelText: 'Detail Agunan (Wajib > Rp 5 Juta)', 
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText:
+                      'Detail Agunan (Wajib > ${CurrencyFormatter.format(kLoanAgunanThreshold)})',
+                  border: const OutlineInputBorder(),
                   helperText: 'Contoh: BPKB Motor Vario 2022',
                 ),
                 validator: (value) => (value == null || value.isEmpty) ? 'Agunan wajib diisi' : null,
@@ -146,14 +142,15 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
             ],
 
             const SizedBox(height: 32),
-
-            // --- 2. DATA PRIBADI & PEKERJAAN ---
             const Text('Data Pribadi', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             TextFormField(
               controller: _alamatController,
               maxLines: 2,
-              decoration: const InputDecoration(labelText: 'Alamat Tinggal Sekarang', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Alamat Tinggal Sekarang',
+                border: OutlineInputBorder(),
+              ),
               validator: (value) => (value == null || value.isEmpty) ? 'Wajib diisi' : null,
             ),
             const SizedBox(height: 16),
@@ -166,13 +163,21 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
             TextFormField(
               controller: _pendapatanController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Total Pendapatan per Bulan (Rp)', border: OutlineInputBorder()),
-              validator: (value) => (value == null || value.isEmpty) ? 'Wajib diisi' : null,
+              inputFormatters: [RupiahInputFormatter()],
+              decoration: const InputDecoration(
+                labelText: 'Total Pendapatan per Bulan',
+                hintText: 'Contoh: 5.000.000',
+                prefixText: 'Rp ',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Wajib diisi';
+                if (CurrencyFormatter.parse(value) == null) return 'Nominal tidak valid';
+                return null;
+              },
             ),
 
             const SizedBox(height: 32),
-
-            // --- 3. DOKUMEN ---
             const Text('Dokumen (Foto)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             Row(
@@ -184,7 +189,6 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
             ),
 
             const SizedBox(height: 40),
-            
             ElevatedButton(
               onPressed: _lanjutkanKeReview,
               style: ElevatedButton.styleFrom(
@@ -192,7 +196,10 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
                 backgroundColor: Colors.blueAccent,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Lanjutkan ke Review', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Lanjutkan ke Review',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),

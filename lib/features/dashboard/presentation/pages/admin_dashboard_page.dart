@@ -2,18 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../loan/presentation/providers/admin_loan_provider.dart';
 import '../../../loan/domain/entities/loan_entity.dart';
 
 class AdminDashboardPage extends ConsumerWidget {
   const AdminDashboardPage({super.key});
-
-  String _formatRupiah(double number) {
-    final formatCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
-    return formatCurrency.format(number);
-  }
 
   void _showVerificationDialog(BuildContext context, LoanEntity loan) {
     showDialog(
@@ -115,7 +110,7 @@ class AdminDashboardPage extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Anda yakin ingin men$actionText pinjaman sebesar ${_formatRupiah(loan.nominalPokok)} ini?'),
+            Text('Anda yakin ingin men$actionText pinjaman sebesar ${CurrencyFormatter.format(loan.nominalPokok)} ini?'),
             const SizedBox(height: 16),
             TextField(
               controller: remarksController,
@@ -217,11 +212,11 @@ class AdminDashboardPage extends ConsumerWidget {
                           ),
                           const Divider(height: 20),
                           
-                          Text('Pengajuan: ${_formatRupiah(loan.nominalPokok)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text('Pengajuan: ${CurrencyFormatter.format(loan.nominalPokok)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),
                           Text('Tenor: ${loan.tenorBulan} Bulan'),
                           Text('Pekerjaan: ${loan.pekerjaan}'),
-                          Text('Pendapatan: ${_formatRupiah(loan.totalPendapatan)}/bulan'), 
+                          Text('Pendapatan: ${CurrencyFormatter.format(loan.totalPendapatan)}/bulan'), 
                           
                           if (loan.agunanDetail != null) ...[
                             const SizedBox(height: 8),

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../../../../core/utils/currency_formatter.dart';
+import '../../../../core/utils/rupiah_input_formatter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
@@ -30,7 +33,7 @@ class _DepositPageState extends ConsumerState<DepositPage> {
       // Sembunyikan keyboard
       FocusScope.of(context).unfocus(); 
       
-      final nominal = double.parse(_nominalController.text);
+      final nominal = CurrencyFormatter.parse(_nominalController.text)!;
       _showQrisSimulation(nominal);
     }
   }
@@ -92,7 +95,7 @@ class _DepositPageState extends ConsumerState<DepositPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Total: Rp ${nominal.toStringAsFixed(0)}',
+                'Total: ${CurrencyFormatter.format(nominal)}',
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blueAccent),
               ),
               const SizedBox(height: 24),
@@ -167,15 +170,21 @@ class _DepositPageState extends ConsumerState<DepositPage> {
               TextFormField(
                 controller: _nominalController,
                 keyboardType: TextInputType.number,
+                inputFormatters: [RupiahInputFormatter()],
                 decoration: const InputDecoration(
-                  labelText: 'Nominal (Rp)',
+                  labelText: 'Nominal',
+                  hintText: 'Contoh: 100.000',
+                  prefixText: 'Rp ',
                   prefixIcon: Icon(Icons.attach_money_rounded),
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) return 'Nominal tidak boleh kosong';
-                  if (double.tryParse(value) == null) return 'Nominal harus berupa angka';
-                  if (double.parse(value) < 10000) return 'Minimal setoran Rp 10.000';
+                  final nominal = CurrencyFormatter.parse(value);
+                  if (nominal == null) return 'Nominal harus berupa angka';
+                  if (nominal < 10000) {
+                    return 'Minimal setoran ${CurrencyFormatter.format(10000)}';
+                  }
                   return null;
                 },
               ),
