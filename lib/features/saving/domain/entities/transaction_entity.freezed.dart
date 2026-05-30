@@ -25,14 +25,24 @@ mixin _$TransactionEntity {
   @JsonKey(name: 'user_id')
   String get userId => throw _privateConstructorUsedError;
   String get type =>
-      throw _privateConstructorUsedError; // 'DEPOSIT' | 'CICILAN'
+      throw _privateConstructorUsedError; // 'DEPOSIT' | 'CICILAN' | 'WITHDRAW'
   double get nominal => throw _privateConstructorUsedError;
   String get status =>
-      throw _privateConstructorUsedError; // 'SUCCESS' | 'PENDING'
+      throw _privateConstructorUsedError; // 'SUCCESS' | 'PENDING' | 'REJECTED'
   @JsonKey(name: 'loan_id')
   String? get loanId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'bank_code')
+  String? get bankCode => throw _privateConstructorUsedError;
+  @JsonKey(name: 'bank_name')
+  String? get bankName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'account_number')
+  String? get accountNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'account_holder')
+  String? get accountHolder => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'nama_lengkap')
+  String? get namaPemohon => throw _privateConstructorUsedError;
 
   /// Serializes this TransactionEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -58,7 +68,12 @@ abstract class $TransactionEntityCopyWith<$Res> {
     double nominal,
     String status,
     @JsonKey(name: 'loan_id') String? loanId,
+    @JsonKey(name: 'bank_code') String? bankCode,
+    @JsonKey(name: 'bank_name') String? bankName,
+    @JsonKey(name: 'account_number') String? accountNumber,
+    @JsonKey(name: 'account_holder') String? accountHolder,
     @JsonKey(name: 'created_at') DateTime createdAt,
+    @JsonKey(name: 'nama_lengkap') String? namaPemohon,
   });
 }
 
@@ -83,7 +98,12 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
     Object? nominal = null,
     Object? status = null,
     Object? loanId = freezed,
+    Object? bankCode = freezed,
+    Object? bankName = freezed,
+    Object? accountNumber = freezed,
+    Object? accountHolder = freezed,
     Object? createdAt = null,
+    Object? namaPemohon = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -111,10 +131,30 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
                 ? _value.loanId
                 : loanId // ignore: cast_nullable_to_non_nullable
                       as String?,
+            bankCode: freezed == bankCode
+                ? _value.bankCode
+                : bankCode // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            bankName: freezed == bankName
+                ? _value.bankName
+                : bankName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            accountNumber: freezed == accountNumber
+                ? _value.accountNumber
+                : accountNumber // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            accountHolder: freezed == accountHolder
+                ? _value.accountHolder
+                : accountHolder // ignore: cast_nullable_to_non_nullable
+                      as String?,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
+            namaPemohon: freezed == namaPemohon
+                ? _value.namaPemohon
+                : namaPemohon // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -137,7 +177,12 @@ abstract class _$$TransactionEntityImplCopyWith<$Res>
     double nominal,
     String status,
     @JsonKey(name: 'loan_id') String? loanId,
+    @JsonKey(name: 'bank_code') String? bankCode,
+    @JsonKey(name: 'bank_name') String? bankName,
+    @JsonKey(name: 'account_number') String? accountNumber,
+    @JsonKey(name: 'account_holder') String? accountHolder,
     @JsonKey(name: 'created_at') DateTime createdAt,
+    @JsonKey(name: 'nama_lengkap') String? namaPemohon,
   });
 }
 
@@ -161,7 +206,12 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
     Object? nominal = null,
     Object? status = null,
     Object? loanId = freezed,
+    Object? bankCode = freezed,
+    Object? bankName = freezed,
+    Object? accountNumber = freezed,
+    Object? accountHolder = freezed,
     Object? createdAt = null,
+    Object? namaPemohon = freezed,
   }) {
     return _then(
       _$TransactionEntityImpl(
@@ -189,10 +239,30 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
             ? _value.loanId
             : loanId // ignore: cast_nullable_to_non_nullable
                   as String?,
+        bankCode: freezed == bankCode
+            ? _value.bankCode
+            : bankCode // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        bankName: freezed == bankName
+            ? _value.bankName
+            : bankName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        accountNumber: freezed == accountNumber
+            ? _value.accountNumber
+            : accountNumber // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        accountHolder: freezed == accountHolder
+            ? _value.accountHolder
+            : accountHolder // ignore: cast_nullable_to_non_nullable
+                  as String?,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
+        namaPemohon: freezed == namaPemohon
+            ? _value.namaPemohon
+            : namaPemohon // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -208,7 +278,12 @@ class _$TransactionEntityImpl implements _TransactionEntity {
     required this.nominal,
     required this.status,
     @JsonKey(name: 'loan_id') this.loanId,
+    @JsonKey(name: 'bank_code') this.bankCode,
+    @JsonKey(name: 'bank_name') this.bankName,
+    @JsonKey(name: 'account_number') this.accountNumber,
+    @JsonKey(name: 'account_holder') this.accountHolder,
     @JsonKey(name: 'created_at') required this.createdAt,
+    @JsonKey(name: 'nama_lengkap') this.namaPemohon,
   });
 
   factory _$TransactionEntityImpl.fromJson(Map<String, dynamic> json) =>
@@ -221,22 +296,37 @@ class _$TransactionEntityImpl implements _TransactionEntity {
   final String userId;
   @override
   final String type;
-  // 'DEPOSIT' | 'CICILAN'
+  // 'DEPOSIT' | 'CICILAN' | 'WITHDRAW'
   @override
   final double nominal;
   @override
   final String status;
-  // 'SUCCESS' | 'PENDING'
+  // 'SUCCESS' | 'PENDING' | 'REJECTED'
   @override
   @JsonKey(name: 'loan_id')
   final String? loanId;
   @override
+  @JsonKey(name: 'bank_code')
+  final String? bankCode;
+  @override
+  @JsonKey(name: 'bank_name')
+  final String? bankName;
+  @override
+  @JsonKey(name: 'account_number')
+  final String? accountNumber;
+  @override
+  @JsonKey(name: 'account_holder')
+  final String? accountHolder;
+  @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
+  @override
+  @JsonKey(name: 'nama_lengkap')
+  final String? namaPemohon;
 
   @override
   String toString() {
-    return 'TransactionEntity(id: $id, userId: $userId, type: $type, nominal: $nominal, status: $status, loanId: $loanId, createdAt: $createdAt)';
+    return 'TransactionEntity(id: $id, userId: $userId, type: $type, nominal: $nominal, status: $status, loanId: $loanId, bankCode: $bankCode, bankName: $bankName, accountNumber: $accountNumber, accountHolder: $accountHolder, createdAt: $createdAt, namaPemohon: $namaPemohon)';
   }
 
   @override
@@ -250,8 +340,18 @@ class _$TransactionEntityImpl implements _TransactionEntity {
             (identical(other.nominal, nominal) || other.nominal == nominal) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.loanId, loanId) || other.loanId == loanId) &&
+            (identical(other.bankCode, bankCode) ||
+                other.bankCode == bankCode) &&
+            (identical(other.bankName, bankName) ||
+                other.bankName == bankName) &&
+            (identical(other.accountNumber, accountNumber) ||
+                other.accountNumber == accountNumber) &&
+            (identical(other.accountHolder, accountHolder) ||
+                other.accountHolder == accountHolder) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.namaPemohon, namaPemohon) ||
+                other.namaPemohon == namaPemohon));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -264,7 +364,12 @@ class _$TransactionEntityImpl implements _TransactionEntity {
     nominal,
     status,
     loanId,
+    bankCode,
+    bankName,
+    accountNumber,
+    accountHolder,
     createdAt,
+    namaPemohon,
   );
 
   /// Create a copy of TransactionEntity
@@ -292,7 +397,12 @@ abstract class _TransactionEntity implements TransactionEntity {
     required final double nominal,
     required final String status,
     @JsonKey(name: 'loan_id') final String? loanId,
+    @JsonKey(name: 'bank_code') final String? bankCode,
+    @JsonKey(name: 'bank_name') final String? bankName,
+    @JsonKey(name: 'account_number') final String? accountNumber,
+    @JsonKey(name: 'account_holder') final String? accountHolder,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
+    @JsonKey(name: 'nama_lengkap') final String? namaPemohon,
   }) = _$TransactionEntityImpl;
 
   factory _TransactionEntity.fromJson(Map<String, dynamic> json) =
@@ -304,17 +414,32 @@ abstract class _TransactionEntity implements TransactionEntity {
   @JsonKey(name: 'user_id')
   String get userId;
   @override
-  String get type; // 'DEPOSIT' | 'CICILAN'
+  String get type; // 'DEPOSIT' | 'CICILAN' | 'WITHDRAW'
   @override
   double get nominal;
   @override
-  String get status; // 'SUCCESS' | 'PENDING'
+  String get status; // 'SUCCESS' | 'PENDING' | 'REJECTED'
   @override
   @JsonKey(name: 'loan_id')
   String? get loanId;
   @override
+  @JsonKey(name: 'bank_code')
+  String? get bankCode;
+  @override
+  @JsonKey(name: 'bank_name')
+  String? get bankName;
+  @override
+  @JsonKey(name: 'account_number')
+  String? get accountNumber;
+  @override
+  @JsonKey(name: 'account_holder')
+  String? get accountHolder;
+  @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;
+  @override
+  @JsonKey(name: 'nama_lengkap')
+  String? get namaPemohon;
 
   /// Create a copy of TransactionEntity
   /// with the given fields replaced by the non-null parameter values.

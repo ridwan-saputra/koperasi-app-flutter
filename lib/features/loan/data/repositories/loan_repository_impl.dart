@@ -201,10 +201,11 @@ class LoanRepositoryImpl implements LoanRepository {
         final balanceResult = await txn.rawQuery(
           '''
           SELECT
-            COALESCE(SUM(CASE WHEN type = 'DEPOSIT' THEN nominal ELSE 0 END), 0) -
-            COALESCE(SUM(CASE WHEN type = 'CICILAN' THEN nominal ELSE 0 END), 0) AS total
+            COALESCE(SUM(CASE WHEN type = 'DEPOSIT' AND status = 'SUCCESS' THEN nominal ELSE 0 END), 0) -
+            COALESCE(SUM(CASE WHEN type = 'CICILAN' AND status = 'SUCCESS' THEN nominal ELSE 0 END), 0) -
+            COALESCE(SUM(CASE WHEN type = 'WITHDRAW' AND status IN ('SUCCESS', 'PENDING') THEN nominal ELSE 0 END), 0) AS total
           FROM transactions
-          WHERE user_id = ? AND status = 'SUCCESS'
+          WHERE user_id = ?
           ''',
           [userId],
         );

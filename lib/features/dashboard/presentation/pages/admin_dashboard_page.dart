@@ -157,6 +157,11 @@ class AdminDashboardPage extends ConsumerWidget {
         foregroundColor: Colors.white,
         actions: [
           IconButton(
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            tooltip: 'Antrean Penarikan',
+            onPressed: () => context.push('/admin-withdraw'),
+          ),
+          IconButton(
             icon: const Icon(Icons.people_alt_rounded),
             tooltip: 'Daftar Anggota',
             onPressed: () => context.push('/admin-members'), 

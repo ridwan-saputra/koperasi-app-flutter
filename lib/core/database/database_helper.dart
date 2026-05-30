@@ -21,7 +21,7 @@ class DatabaseHelper {
     // Buka database, jika belum ada otomatis memanggil _createDB
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _createDB,
       onUpgrade: _upgradeDB,
     );
@@ -32,6 +32,25 @@ class DatabaseHelper {
       await db.execute(
         'ALTER TABLE transactions ADD COLUMN loan_id TEXT REFERENCES loans (id)',
       );
+    }
+    if (oldVersion < 3) {
+      await db.execute('''
+        CREATE TABLE user_bank_accounts (
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL,
+          bank_code TEXT NOT NULL,
+          bank_name TEXT NOT NULL,
+          account_number TEXT NOT NULL,
+          account_holder TEXT NOT NULL,
+          is_primary INTEGER NOT NULL DEFAULT 1,
+          created_at TEXT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+        )
+      ''');
+      await db.execute('ALTER TABLE transactions ADD COLUMN bank_code TEXT');
+      await db.execute('ALTER TABLE transactions ADD COLUMN bank_name TEXT');
+      await db.execute('ALTER TABLE transactions ADD COLUMN account_number TEXT');
+      await db.execute('ALTER TABLE transactions ADD COLUMN account_holder TEXT');
     }
   }
 
@@ -59,13 +78,29 @@ Future _createDB(Database db, int version) async {
         nominal REAL NOT NULL,
         status TEXT NOT NULL,
         loan_id TEXT,
+        bank_code TEXT,
+        bank_name TEXT,
+        account_number TEXT,
+        account_holder TEXT,
         created_at TEXT NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         FOREIGN KEY (loan_id) REFERENCES loans (id) ON DELETE SET NULL
       )
     ''');
 
-    // ... (Kode pembuatan tabel users dan transactions sebelumnya) ...
+    await db.execute('''
+      CREATE TABLE user_bank_accounts (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        bank_code TEXT NOT NULL,
+        bank_name TEXT NOT NULL,
+        account_number TEXT NOT NULL,
+        account_holder TEXT NOT NULL,
+        is_primary INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      )
+    ''');
 
     // 3. Membuat tabel loans (Pinjaman)
     await db.execute('''

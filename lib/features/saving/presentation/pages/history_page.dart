@@ -10,14 +10,12 @@ class HistoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Ambil data user yang sedang aktif
     final user = ref.watch(authNotifierProvider).value;
 
     if (user == null) {
       return const Scaffold(body: Center(child: Text('Harap login terlebih dahulu')));
     }
 
-    // Pantau FutureProvider berdasarkan ID user
     final historyAsync = ref.watch(historyProvider(user.id));
 
     return Scaffold(
@@ -44,43 +42,61 @@ class HistoryPage extends ConsumerWidget {
               final dateFormatted = DateFormat('dd MMM yyyy, HH:mm').format(trx.createdAt);
               final isDeposit = trx.type == 'DEPOSIT';
               final isCicilan = trx.type == 'CICILAN';
+              final isWithdraw = trx.type == 'WITHDRAW';
 
               String title;
               if (isDeposit) {
                 title = 'Setor Tunai';
               } else if (isCicilan) {
                 title = 'Bayar Cicilan';
+              } else if (isWithdraw) {
+                title = 'Tarik ke Bank';
               } else {
                 title = trx.type;
               }
 
-              final subtitle = isCicilan && trx.loanId != null
-                  ? '$dateFormatted\nPinjaman: ${trx.loanId!.substring(0, 8)}...'
-                  : dateFormatted;
+              final buffer = StringBuffer(dateFormatted);
+              if (isCicilan && trx.loanId != null) {
+                buffer.write('\nPinjaman: ${trx.loanId!.substring(0, 8)}...');
+              }
+              if (isWithdraw && trx.bankName != null) {
+                buffer.write('\n${trx.bankName} • ${trx.accountNumber}');
+              }
+              if (isWithdraw && trx.status != 'SUCCESS') {
+                buffer.write('\nStatus: ${trx.status}');
+              }
+
+              final isCredit = isDeposit;
+              Color amountColor = isCredit ? Colors.green : Colors.red;
+              if (isWithdraw && trx.status == 'PENDING') {
+                amountColor = Colors.orange;
+              } else if (isWithdraw && trx.status == 'REJECTED') {
+                amountColor = Colors.grey;
+              }
 
               return Card(
                 elevation: 2,
                 margin: const EdgeInsets.only(bottom: 12.0),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: isDeposit
-                        ? Colors.green.withOpacity(0.2)
-                        : Colors.red.withOpacity(0.2),
+                    backgroundColor: isCredit
+                        ? Colors.green.withValues(alpha: 0.2)
+                        : Colors.red.withValues(alpha: 0.2),
                     child: Icon(
-                      isDeposit ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
-                      color: isDeposit ? Colors.green : Colors.red,
+                      isCredit ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                      color: isCredit ? Colors.green : Colors.red,
                     ),
                   ),
                   title: Text(
                     title,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(subtitle),
-                  isThreeLine: isCicilan && trx.loanId != null,
+                  subtitle: Text(buffer.toString()),
+                  isThreeLine: true,
                   trailing: Text(
-                    '${isDeposit ? '+' : '-'} ${CurrencyFormatter.format(trx.nominal)}',
+                    '${isCredit ? '+' : '-'} ${CurrencyFormatter.format(trx.nominal)}',
                     style: TextStyle(
-                      color: isDeposit ? Colors.green : Colors.red,
+                      color: amountColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),

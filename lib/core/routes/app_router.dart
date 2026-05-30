@@ -4,7 +4,10 @@ import '../../features/auth/presentation/pages/register_page.dart'; // Tambahan 
 import '../../features/dashboard/presentation/pages/admin_dashboard_page.dart';
 import '../../features/dashboard/presentation/pages/user_dashboard_page.dart';
 import '../../features/saving/presentation/pages/deposit_page.dart';
+import '../../features/saving/presentation/pages/withdraw_page.dart';
+import '../../features/saving/presentation/pages/bank_account_page.dart';
 import '../../features/saving/presentation/pages/history_page.dart';
+import '../../features/dashboard/presentation/pages/admin_withdraw_page.dart';
 import '../../features/loan/presentation/pages/loan_form_page.dart';
 import '../../features/loan/presentation/pages/loan_review_page.dart';
 import '../../features/loan/presentation/pages/installment_payment_page.dart';
@@ -30,6 +33,14 @@ final appRouter = GoRouter(
       builder: (context, state) => const DepositPage(),
     ),
     GoRoute(
+      path: '/withdraw',
+      builder: (context, state) => const WithdrawPage(),
+    ),
+    GoRoute(
+      path: '/bank-account',
+      builder: (context, state) => const BankAccountPage(),
+    ),
+    GoRoute(
       path: '/loan-form',
       builder: (context, state) => const LoanFormPage(),
     ),
@@ -52,6 +63,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/admin-members',
       builder: (context, state) => const AdminMembersPage(),
+    ),
+    GoRoute(
+      path: '/admin-withdraw',
+      builder: (context, state) => const AdminWithdrawPage(),
     ),
   ],
 );

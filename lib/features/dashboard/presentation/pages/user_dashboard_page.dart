@@ -126,11 +126,24 @@ class _UserDashboardPageState extends ConsumerState<UserDashboardPage> {
                 ),
                 _buildMenuButton(
                   context,
+                  icon: Icons.outbox_rounded,
+                  label: 'Tarik',
+                  color: Colors.redAccent,
+                  onTap: () => context.push('/withdraw'),
+                ),
+                _buildMenuButton(
+                  context,
                   icon: Icons.money_off_rounded,
                   label: 'Pinjam',
                   color: Colors.orange,
                   onTap: () => context.push('/loan-form'),
                 ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
                 _buildMenuButton(
                   context,
                   icon: Icons.payments_rounded,
@@ -138,12 +151,6 @@ class _UserDashboardPageState extends ConsumerState<UserDashboardPage> {
                   color: Colors.teal,
                   onTap: () => context.push('/installment-payment'),
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
                 _buildMenuButton(
                   context,
                   icon: Icons.history_rounded,
