@@ -11,4 +11,13 @@ abstract class SavingRepository {
 
   // Fungsi untuk mengambil riwayat transaksi berdasarkan ID User
   Future<Either<Failure, List<TransactionEntity>>> getTransactionHistory(String userId);
+
+  Future<Either<Failure, TransactionEntity>> requestWithdraw(TransactionEntity transaction);
+
+  Future<Either<Failure, List<TransactionEntity>>> getPendingWithdrawals();
+
+  Future<Either<Failure, bool>> processWithdrawStatus({
+    required String transactionId,
+    required String status,
+  });
 }
