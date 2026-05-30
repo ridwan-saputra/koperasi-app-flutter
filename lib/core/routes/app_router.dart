@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart'; // Tambahan ini
 import '../../features/dashboard/presentation/pages/admin_dashboard_page.dart';
+import '../../features/dashboard/presentation/pages/admin_loans_page.dart';
 import '../../features/dashboard/presentation/pages/user_dashboard_page.dart';
 import '../../features/saving/presentation/pages/deposit_page.dart';
 import '../../features/saving/presentation/pages/withdraw_page.dart';
@@ -55,6 +56,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/admin-dashboard',
       builder: (context, state) => const AdminDashboardPage(),
+    ),
+    GoRoute(
+      path: '/admin-loans',
+      builder: (context, state) => const AdminLoansPage(),
     ),
     GoRoute(
       path: '/loan-review',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/currency_formatter.dart';
+import '../../../../core/widgets/quick_menu_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -117,22 +118,19 @@ class _UserDashboardPageState extends ConsumerState<UserDashboardPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildMenuButton(
-                  context,
+                QuickMenuButton(
                   icon: Icons.add_circle_outline_rounded,
                   label: 'Simpan',
                   color: Colors.green,
                   onTap: () => context.push('/deposit'),
                 ),
-                _buildMenuButton(
-                  context,
+                QuickMenuButton(
                   icon: Icons.outbox_rounded,
                   label: 'Tarik',
                   color: Colors.redAccent,
                   onTap: () => context.push('/withdraw'),
                 ),
-                _buildMenuButton(
-                  context,
+                QuickMenuButton(
                   icon: Icons.money_off_rounded,
                   label: 'Pinjam',
                   color: Colors.orange,
@@ -144,52 +142,19 @@ class _UserDashboardPageState extends ConsumerState<UserDashboardPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildMenuButton(
-                  context,
+                QuickMenuButton(
                   icon: Icons.payments_rounded,
                   label: 'Cicilan',
                   color: Colors.teal,
                   onTap: () => context.push('/installment-payment'),
                 ),
-                _buildMenuButton(
-                  context,
+                QuickMenuButton(
                   icon: Icons.history_rounded,
                   label: 'Riwayat',
                   color: Colors.purple,
                   onTap: () => context.push('/history'),
                 ),
               ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Widget khusus (Komponen) untuk tombol menu agar kode lebih rapi
-  Widget _buildMenuButton(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: color.withOpacity(0.15),
-              child: Icon(icon, color: color, size: 32),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
           ],
         ),
