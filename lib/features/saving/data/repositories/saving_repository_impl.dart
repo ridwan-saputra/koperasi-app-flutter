@@ -15,9 +15,14 @@ class SavingRepositoryImpl implements SavingRepository {
     try {
       final db = await dbHelper.database;
       
-      // Menggunakan SQL SUM untuk menjumlahkan semua nominal dengan status SUCCESS
       final result = await db.rawQuery(
-        "SELECT SUM(nominal) as total FROM transactions WHERE user_id = ? AND status = 'SUCCESS'",
+        '''
+        SELECT
+          COALESCE(SUM(CASE WHEN type = 'DEPOSIT' THEN nominal ELSE 0 END), 0) -
+          COALESCE(SUM(CASE WHEN type = 'CICILAN' THEN nominal ELSE 0 END), 0) AS total
+        FROM transactions
+        WHERE user_id = ? AND status = 'SUCCESS'
+        ''',
         [userId],
       );
 

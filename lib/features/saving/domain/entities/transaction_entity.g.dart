@@ -14,6 +14,7 @@ _$TransactionEntityImpl _$$TransactionEntityImplFromJson(
   type: json['type'] as String,
   nominal: (json['nominal'] as num).toDouble(),
   status: json['status'] as String,
+  loanId: json['loan_id'] as String?,
   createdAt: DateTime.parse(json['created_at'] as String),
 );
 
@@ -25,5 +26,6 @@ Map<String, dynamic> _$$TransactionEntityImplToJson(
   'type': instance.type,
   'nominal': instance.nominal,
   'status': instance.status,
+  'loan_id': instance.loanId,
   'created_at': instance.createdAt.toIso8601String(),
 };
