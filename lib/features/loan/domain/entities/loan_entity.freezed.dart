@@ -38,6 +38,8 @@ mixin _$LoanEntity {
   double get cicilanPerBulan => throw _privateConstructorUsedError;
   @JsonKey(name: 'agunan_detail')
   String? get agunanDetail => throw _privateConstructorUsedError;
+  @JsonKey(name: 'agunan_image_path')
+  String? get agunanImagePath => throw _privateConstructorUsedError;
   @JsonKey(name: 'alamat_tinggal')
   String get alamatTinggal => throw _privateConstructorUsedError;
   String get pekerjaan => throw _privateConstructorUsedError;
@@ -82,6 +84,7 @@ abstract class $LoanEntityCopyWith<$Res> {
     @JsonKey(name: 'total_bayar') double totalBayar,
     @JsonKey(name: 'cicilan_per_bulan') double cicilanPerBulan,
     @JsonKey(name: 'agunan_detail') String? agunanDetail,
+    @JsonKey(name: 'agunan_image_path') String? agunanImagePath,
     @JsonKey(name: 'alamat_tinggal') String alamatTinggal,
     String pekerjaan,
     @JsonKey(name: 'total_pendapatan') double totalPendapatan,
@@ -118,6 +121,7 @@ class _$LoanEntityCopyWithImpl<$Res, $Val extends LoanEntity>
     Object? totalBayar = null,
     Object? cicilanPerBulan = null,
     Object? agunanDetail = freezed,
+    Object? agunanImagePath = freezed,
     Object? alamatTinggal = null,
     Object? pekerjaan = null,
     Object? totalPendapatan = null,
@@ -165,6 +169,10 @@ class _$LoanEntityCopyWithImpl<$Res, $Val extends LoanEntity>
             agunanDetail: freezed == agunanDetail
                 ? _value.agunanDetail
                 : agunanDetail // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            agunanImagePath: freezed == agunanImagePath
+                ? _value.agunanImagePath
+                : agunanImagePath // ignore: cast_nullable_to_non_nullable
                       as String?,
             alamatTinggal: null == alamatTinggal
                 ? _value.alamatTinggal
@@ -227,6 +235,7 @@ abstract class _$$LoanEntityImplCopyWith<$Res>
     @JsonKey(name: 'total_bayar') double totalBayar,
     @JsonKey(name: 'cicilan_per_bulan') double cicilanPerBulan,
     @JsonKey(name: 'agunan_detail') String? agunanDetail,
+    @JsonKey(name: 'agunan_image_path') String? agunanImagePath,
     @JsonKey(name: 'alamat_tinggal') String alamatTinggal,
     String pekerjaan,
     @JsonKey(name: 'total_pendapatan') double totalPendapatan,
@@ -262,6 +271,7 @@ class __$$LoanEntityImplCopyWithImpl<$Res>
     Object? totalBayar = null,
     Object? cicilanPerBulan = null,
     Object? agunanDetail = freezed,
+    Object? agunanImagePath = freezed,
     Object? alamatTinggal = null,
     Object? pekerjaan = null,
     Object? totalPendapatan = null,
@@ -309,6 +319,10 @@ class __$$LoanEntityImplCopyWithImpl<$Res>
         agunanDetail: freezed == agunanDetail
             ? _value.agunanDetail
             : agunanDetail // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        agunanImagePath: freezed == agunanImagePath
+            ? _value.agunanImagePath
+            : agunanImagePath // ignore: cast_nullable_to_non_nullable
                   as String?,
         alamatTinggal: null == alamatTinggal
             ? _value.alamatTinggal
@@ -364,6 +378,7 @@ class _$LoanEntityImpl implements _LoanEntity {
     @JsonKey(name: 'total_bayar') required this.totalBayar,
     @JsonKey(name: 'cicilan_per_bulan') required this.cicilanPerBulan,
     @JsonKey(name: 'agunan_detail') this.agunanDetail,
+    @JsonKey(name: 'agunan_image_path') this.agunanImagePath,
     @JsonKey(name: 'alamat_tinggal') required this.alamatTinggal,
     required this.pekerjaan,
     @JsonKey(name: 'total_pendapatan') required this.totalPendapatan,
@@ -405,6 +420,9 @@ class _$LoanEntityImpl implements _LoanEntity {
   @JsonKey(name: 'agunan_detail')
   final String? agunanDetail;
   @override
+  @JsonKey(name: 'agunan_image_path')
+  final String? agunanImagePath;
+  @override
   @JsonKey(name: 'alamat_tinggal')
   final String alamatTinggal;
   @override
@@ -433,7 +451,7 @@ class _$LoanEntityImpl implements _LoanEntity {
 
   @override
   String toString() {
-    return 'LoanEntity(id: $id, userId: $userId, nominalPokok: $nominalPokok, tenorBulan: $tenorBulan, bungaPersen: $bungaPersen, biayaAdmin: $biayaAdmin, totalBayar: $totalBayar, cicilanPerBulan: $cicilanPerBulan, agunanDetail: $agunanDetail, alamatTinggal: $alamatTinggal, pekerjaan: $pekerjaan, totalPendapatan: $totalPendapatan, ktpImagePath: $ktpImagePath, selfieImagePath: $selfieImagePath, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, namaPeminjam: $namaPeminjam)';
+    return 'LoanEntity(id: $id, userId: $userId, nominalPokok: $nominalPokok, tenorBulan: $tenorBulan, bungaPersen: $bungaPersen, biayaAdmin: $biayaAdmin, totalBayar: $totalBayar, cicilanPerBulan: $cicilanPerBulan, agunanDetail: $agunanDetail, agunanImagePath: $agunanImagePath, alamatTinggal: $alamatTinggal, pekerjaan: $pekerjaan, totalPendapatan: $totalPendapatan, ktpImagePath: $ktpImagePath, selfieImagePath: $selfieImagePath, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, namaPeminjam: $namaPeminjam)';
   }
 
   @override
@@ -457,6 +475,8 @@ class _$LoanEntityImpl implements _LoanEntity {
                 other.cicilanPerBulan == cicilanPerBulan) &&
             (identical(other.agunanDetail, agunanDetail) ||
                 other.agunanDetail == agunanDetail) &&
+            (identical(other.agunanImagePath, agunanImagePath) ||
+                other.agunanImagePath == agunanImagePath) &&
             (identical(other.alamatTinggal, alamatTinggal) ||
                 other.alamatTinggal == alamatTinggal) &&
             (identical(other.pekerjaan, pekerjaan) ||
@@ -478,7 +498,7 @@ class _$LoanEntityImpl implements _LoanEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     id,
     userId,
@@ -489,6 +509,7 @@ class _$LoanEntityImpl implements _LoanEntity {
     totalBayar,
     cicilanPerBulan,
     agunanDetail,
+    agunanImagePath,
     alamatTinggal,
     pekerjaan,
     totalPendapatan,
@@ -498,7 +519,7 @@ class _$LoanEntityImpl implements _LoanEntity {
     createdAt,
     updatedAt,
     namaPeminjam,
-  );
+  ]);
 
   /// Create a copy of LoanEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -525,6 +546,7 @@ abstract class _LoanEntity implements LoanEntity {
     @JsonKey(name: 'total_bayar') required final double totalBayar,
     @JsonKey(name: 'cicilan_per_bulan') required final double cicilanPerBulan,
     @JsonKey(name: 'agunan_detail') final String? agunanDetail,
+    @JsonKey(name: 'agunan_image_path') final String? agunanImagePath,
     @JsonKey(name: 'alamat_tinggal') required final String alamatTinggal,
     required final String pekerjaan,
     @JsonKey(name: 'total_pendapatan') required final double totalPendapatan,
@@ -565,6 +587,9 @@ abstract class _LoanEntity implements LoanEntity {
   @override
   @JsonKey(name: 'agunan_detail')
   String? get agunanDetail;
+  @override
+  @JsonKey(name: 'agunan_image_path')
+  String? get agunanImagePath;
   @override
   @JsonKey(name: 'alamat_tinggal')
   String get alamatTinggal;

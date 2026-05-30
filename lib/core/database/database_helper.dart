@@ -21,7 +21,7 @@ class DatabaseHelper {
     // Buka database, jika belum ada otomatis memanggil _createDB
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _createDB,
       onUpgrade: _upgradeDB,
     );
@@ -51,6 +51,9 @@ class DatabaseHelper {
       await db.execute('ALTER TABLE transactions ADD COLUMN bank_name TEXT');
       await db.execute('ALTER TABLE transactions ADD COLUMN account_number TEXT');
       await db.execute('ALTER TABLE transactions ADD COLUMN account_holder TEXT');
+    }
+    if (oldVersion < 4) {
+      await db.execute('ALTER TABLE loans ADD COLUMN agunan_image_path TEXT');
     }
   }
 
@@ -114,6 +117,7 @@ Future _createDB(Database db, int version) async {
         total_bayar REAL NOT NULL,
         cicilan_per_bulan REAL NOT NULL,
         agunan_detail TEXT,
+        agunan_image_path TEXT,
         alamat_tinggal TEXT NOT NULL,
         pekerjaan TEXT NOT NULL,
         total_pendapatan REAL NOT NULL,

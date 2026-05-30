@@ -40,6 +40,24 @@ class AdminLoansPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 _buildImageContainer(loan.selfieImagePath),
+                if (loan.agunanImagePath != null && loan.agunanImagePath!.isNotEmpty) ...[
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  const SizedBox(height: 12),
+                  const Text(
+                    '3. Foto Agunan',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                  ),
+                  if (loan.agunanDetail != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      loan.agunanDetail!,
+                      style: const TextStyle(color: Colors.black87, fontSize: 13),
+                    ),
+                  ],
+                  const SizedBox(height: 8),
+                  _buildImageContainer(loan.agunanImagePath!),
+                ],
               ],
             ),
           ),

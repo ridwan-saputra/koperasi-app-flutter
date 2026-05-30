@@ -18,5 +18,5 @@ const List<double> kLoanAmountOptions = [
   50000000,
 ];
 
-/// Batas pinjaman yang mewajibkan agunan.
+/// Batas pinjaman yang mewajibkan agunan (>= nominal ini).
 const double kLoanAgunanThreshold = 5000000;

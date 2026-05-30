@@ -9,6 +9,8 @@ import '../../../../core/utils/rupiah_input_formatter.dart';
 import '../../domain/constants/loan_amount_options.dart';
 import '../providers/loan_draft_provider.dart';
 
+enum _DocumentType { ktp, selfie, agunan }
+
 class LoanFormPage extends ConsumerStatefulWidget {
   const LoanFormPage({super.key});
 
@@ -27,8 +29,9 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
   int _tenorBulan = 6;
   File? _ktpImage;
   File? _selfieImage;
+  File? _agunanImage;
 
-  bool get _isAgunanRequired => _selectedNominal > kLoanAgunanThreshold;
+  bool get _isAgunanRequired => _selectedNominal >= kLoanAgunanThreshold;
 
   @override
   void dispose() {
@@ -39,52 +42,64 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
     super.dispose();
   }
 
-  Future<void> _pickImage(bool isKtp) async {
+  Future<void> _pickImage(_DocumentType type) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 70);
 
     if (pickedFile != null) {
       setState(() {
-        if (isKtp) {
-          _ktpImage = File(pickedFile.path);
-        } else {
-          _selfieImage = File(pickedFile.path);
+        switch (type) {
+          case _DocumentType.ktp:
+            _ktpImage = File(pickedFile.path);
+          case _DocumentType.selfie:
+            _selfieImage = File(pickedFile.path);
+          case _DocumentType.agunan:
+            _agunanImage = File(pickedFile.path);
         }
       });
     }
   }
 
   void _lanjutkanKeReview() {
-    if (_formKey.currentState!.validate()) {
-      if (_ktpImage == null || _selfieImage == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Harap unggah foto KTP dan Selfie'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-        return;
-      }
+    if (!_formKey.currentState!.validate()) return;
 
-      final pendapatan = CurrencyFormatter.parse(_pendapatanController.text);
-      if (pendapatan == null) {
-        return;
-      }
-
-      final draftData = {
-        'nominal': _selectedNominal,
-        'tenor': _tenorBulan,
-        'agunan': _isAgunanRequired ? _agunanController.text : null,
-        'alamat': _alamatController.text,
-        'pekerjaan': _pekerjaanController.text,
-        'pendapatan': pendapatan,
-        'ktpPath': _ktpImage!.path,
-        'selfiePath': _selfieImage!.path,
-      };
-
-      ref.read(loanDraftProvider.notifier).state = draftData;
-      context.push('/loan-review');
+    if (_ktpImage == null || _selfieImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Harap unggah foto KTP dan Selfie'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
     }
+
+    if (_isAgunanRequired && _agunanImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Harap unggah foto agunan (mis. BPKB)'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    final pendapatan = CurrencyFormatter.parse(_pendapatanController.text);
+    if (pendapatan == null) return;
+
+    final draftData = {
+      'nominal': _selectedNominal,
+      'tenor': _tenorBulan,
+      'agunan': _isAgunanRequired ? _agunanController.text : null,
+      'agunanPath': _isAgunanRequired ? _agunanImage!.path : null,
+      'alamat': _alamatController.text,
+      'pekerjaan': _pekerjaanController.text,
+      'pendapatan': pendapatan,
+      'ktpPath': _ktpImage!.path,
+      'selfiePath': _selfieImage!.path,
+    };
+
+    ref.read(loanDraftProvider.notifier).state = draftData;
+    context.push('/loan-review');
   }
 
   @override
@@ -113,7 +128,13 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
               }).toList(),
               onChanged: (value) {
                 if (value != null) {
-                  setState(() => _selectedNominal = value);
+                  setState(() {
+                    _selectedNominal = value;
+                    if (!_isAgunanRequired) {
+                      _agunanImage = null;
+                      _agunanController.clear();
+                    }
+                  });
                 }
               },
             ),
@@ -133,11 +154,25 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
                 controller: _agunanController,
                 decoration: InputDecoration(
                   labelText:
-                      'Detail Agunan (Wajib > ${CurrencyFormatter.format(kLoanAgunanThreshold)})',
+                      'Detail Agunan (Wajib mulai ${CurrencyFormatter.format(kLoanAgunanThreshold)})',
                   border: const OutlineInputBorder(),
                   helperText: 'Contoh: BPKB Motor Vario 2022',
                 ),
                 validator: (value) => (value == null || value.isEmpty) ? 'Agunan wajib diisi' : null,
+              ),
+              const SizedBox(height: 16),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Foto Agunan (BPKB / dokumen jaminan)',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              const SizedBox(height: 8),
+              _buildImagePicker(
+                'Foto Agunan',
+                _agunanImage,
+                () => _pickImage(_DocumentType.agunan),
               ),
             ],
 
@@ -178,13 +213,21 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
             ),
 
             const SizedBox(height: 32),
-            const Text('Dokumen (Foto)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Dokumen Identitas', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(child: _buildImagePicker('Foto KTP', _ktpImage, () => _pickImage(true))),
+                Expanded(
+                  child: _buildImagePicker('Foto KTP', _ktpImage, () => _pickImage(_DocumentType.ktp)),
+                ),
                 const SizedBox(width: 16),
-                Expanded(child: _buildImagePicker('Selfie + KTP', _selfieImage, () => _pickImage(false))),
+                Expanded(
+                  child: _buildImagePicker(
+                    'Selfie + KTP',
+                    _selfieImage,
+                    () => _pickImage(_DocumentType.selfie),
+                  ),
+                ),
               ],
             ),
 
@@ -227,7 +270,7 @@ class _LoanFormPageState extends ConsumerState<LoanFormPage> {
                 children: [
                   const Icon(Icons.camera_alt, color: Colors.grey, size: 32),
                   const SizedBox(height: 8),
-                  Text(label, style: const TextStyle(color: Colors.grey)),
+                  Text(label, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
       ),
