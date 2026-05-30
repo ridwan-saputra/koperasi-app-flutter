@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,6 +39,7 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
       totalBayar: totalBayar,
       cicilanPerBulan: cicilan,
       agunanDetail: draftData['agunan'],
+      agunanImagePath: draftData['agunanPath'],
       alamatTinggal: draftData['alamat'],
       pekerjaan: draftData['pekerjaan'],
       totalPendapatan: draftData['pendapatan'],
@@ -80,6 +82,8 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
     final totalBunga = LoanCalculator.hitungTotalBunga(nominal, tenor);
     final totalBayar = LoanCalculator.hitungTotalBayar(nominal, tenor);
     final cicilan = LoanCalculator.hitungCicilanPerBulan(nominal, tenor);
+    final agunanDetail = draftData['agunan'] as String?;
+    final agunanPath = draftData['agunanPath'] as String?;
 
     // Dengarkan jika ada pesan error dari database untuk dimunculkan ke SnackBar
     ref.listen<AsyncValue>(loanNotifierProvider, (previous, next) {
@@ -129,6 +133,32 @@ class _LoanReviewPageState extends ConsumerState<LoanReviewPage> {
               ],
             ),
           ),
+
+          if (agunanDetail != null) ...[
+            const SizedBox(height: 24),
+            const Divider(),
+            const SizedBox(height: 16),
+            const Text(
+              'Data Agunan',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            _buildDetailRow('Detail', agunanDetail),
+            if (agunanPath != null) ...[
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: File(agunanPath).existsSync()
+                    ? Image.file(File(agunanPath), height: 160, width: double.infinity, fit: BoxFit.cover)
+                    : Container(
+                        height: 120,
+                        color: Colors.grey.shade200,
+                        alignment: Alignment.center,
+                        child: const Text('Foto agunan tidak ditemukan'),
+                      ),
+              ),
+            ],
+          ],
 
           const SizedBox(height: 40),
           
