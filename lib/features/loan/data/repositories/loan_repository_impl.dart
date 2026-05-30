@@ -5,6 +5,7 @@ import '../../../../core/database/database_helper.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../auth/domain/entities/user_entity.dart';
+import '../../../saving/data/transaction_db_mapper.dart';
 import '../../../saving/domain/entities/transaction_entity.dart';
 import '../../domain/entities/loan_entity.dart';
 import '../../domain/repositories/loan_repository.dart';
@@ -227,7 +228,7 @@ class LoanRepositoryImpl implements LoanRepository {
           createdAt: DateTime.now(),
         );
 
-        await txn.insert('transactions', transaction!.toJson());
+        await txn.insert('transactions', transactionToDbMap(transaction!));
 
         if (paidCount + 1 >= loan.tenorBulan) {
           await txn.update(

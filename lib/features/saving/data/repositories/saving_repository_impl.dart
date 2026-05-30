@@ -6,17 +6,12 @@ import '../../../../core/utils/currency_formatter.dart';
 import '../../domain/constants/supported_banks.dart';
 import '../../domain/entities/transaction_entity.dart';
 import '../../domain/repositories/saving_repository.dart';
+import '../transaction_db_mapper.dart';
 
 class SavingRepositoryImpl implements SavingRepository {
   SavingRepositoryImpl(this.dbHelper);
 
   final DatabaseHelper dbHelper;
-
-  Map<String, dynamic> _transactionToDb(TransactionEntity transaction) {
-    final map = transaction.toJson();
-    map.remove('nama_lengkap');
-    return map;
-  }
 
   /// Saldo tersedia: deposit sukses dikurangi cicilan, withdraw sukses, dan withdraw pending.
   Future<Either<Failure, double>> _getAvailableBalance(DatabaseExecutor db, String userId) async {
@@ -54,7 +49,7 @@ class SavingRepositoryImpl implements SavingRepository {
 
       await db.insert(
         'transactions',
-        _transactionToDb(transaction),
+        transactionToDbMap(transaction),
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
 
@@ -111,7 +106,7 @@ class SavingRepositoryImpl implements SavingRepository {
           return;
         }
 
-        await txn.insert('transactions', _transactionToDb(transaction));
+        await txn.insert('transactions', transactionToDbMap(transaction));
       });
 
       if (failure != null) return Left(failure!);
