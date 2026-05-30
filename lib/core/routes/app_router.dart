@@ -7,6 +7,7 @@ import '../../features/saving/presentation/pages/deposit_page.dart';
 import '../../features/saving/presentation/pages/history_page.dart';
 import '../../features/loan/presentation/pages/loan_form_page.dart';
 import '../../features/loan/presentation/pages/loan_review_page.dart';
+import '../../features/loan/presentation/pages/installment_payment_page.dart';
 import '../../features/dashboard/presentation/pages/admin_members_page.dart';
 
 final appRouter = GoRouter(
@@ -35,6 +36,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/history',
       builder: (context, state) => const HistoryPage(),
+    ),
+    GoRoute(
+      path: '/installment-payment',
+      builder: (context, state) => const InstallmentPaymentPage(),
     ),
     GoRoute(
       path: '/admin-dashboard',

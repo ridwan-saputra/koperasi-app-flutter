@@ -116,38 +116,42 @@ class _UserDashboardPageState extends ConsumerState<UserDashboardPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-_buildMenuButton(
+                _buildMenuButton(
                   context,
                   icon: Icons.add_circle_outline_rounded,
                   label: 'Simpan',
                   color: Colors.green,
-                  onTap: () {
-                    // Berpindah ke halaman deposit
-                    context.push('/deposit');
-                  },
+                  onTap: () => context.push('/deposit'),
                 ),
-_buildMenuButton(
+                _buildMenuButton(
                   context,
                   icon: Icons.money_off_rounded,
                   label: 'Pinjam',
                   color: Colors.orange,
-                  onTap: () {
-                    // Pindah ke halaman form pengajuan pinjaman
-                    context.push('/loan-form');
-                  },
+                  onTap: () => context.push('/loan-form'),
                 ),
-_buildMenuButton(
+                _buildMenuButton(
+                  context,
+                  icon: Icons.payments_rounded,
+                  label: 'Cicilan',
+                  color: Colors.teal,
+                  onTap: () => context.push('/installment-payment'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildMenuButton(
                   context,
                   icon: Icons.history_rounded,
                   label: 'Riwayat',
                   color: Colors.purple,
-                  onTap: () {
-                    // Berpindah ke halaman riwayat
-                    context.push('/history');
-                  },
+                  onTap: () => context.push('/history'),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

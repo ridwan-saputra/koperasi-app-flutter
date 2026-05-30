@@ -40,29 +40,46 @@ class HistoryPage extends ConsumerWidget {
             itemCount: transactions.length,
             itemBuilder: (context, index) {
               final trx = transactions[index];
-              // Format tanggal menjadi lebih rapi
               final dateFormatted = DateFormat('dd MMM yyyy, HH:mm').format(trx.createdAt);
+              final isDeposit = trx.type == 'DEPOSIT';
+              final isCicilan = trx.type == 'CICILAN';
+
+              String title;
+              if (isDeposit) {
+                title = 'Setor Tunai';
+              } else if (isCicilan) {
+                title = 'Bayar Cicilan';
+              } else {
+                title = trx.type;
+              }
+
+              final subtitle = isCicilan && trx.loanId != null
+                  ? '$dateFormatted\nPinjaman: ${trx.loanId!.substring(0, 8)}...'
+                  : dateFormatted;
 
               return Card(
                 elevation: 2,
                 margin: const EdgeInsets.only(bottom: 12.0),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: trx.type == 'DEPOSIT' ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2),
+                    backgroundColor: isDeposit
+                        ? Colors.green.withOpacity(0.2)
+                        : Colors.red.withOpacity(0.2),
                     child: Icon(
-                      trx.type == 'DEPOSIT' ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
-                      color: trx.type == 'DEPOSIT' ? Colors.green : Colors.red,
+                      isDeposit ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                      color: isDeposit ? Colors.green : Colors.red,
                     ),
                   ),
                   title: Text(
-                    trx.type == 'DEPOSIT' ? 'Setor Tunai' : 'Tarik Tunai',
+                    title,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(dateFormatted),
+                  subtitle: Text(subtitle),
+                  isThreeLine: isCicilan && trx.loanId != null,
                   trailing: Text(
-                    '+ Rp ${trx.nominal.toStringAsFixed(0)}',
-                    style: const TextStyle(
-                      color: Colors.green,
+                    '${isDeposit ? '+' : '-'} Rp ${trx.nominal.toStringAsFixed(0)}',
+                    style: TextStyle(
+                      color: isDeposit ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),

@@ -8,9 +8,10 @@ class TransactionEntity with _$TransactionEntity {
   const factory TransactionEntity({
     required String id,
     @JsonKey(name: 'user_id') required String userId,
-    required String type, // Contoh: 'DEPOSIT'
+    required String type, // 'DEPOSIT' | 'CICILAN'
     required double nominal,
-    required String status, // Contoh: 'SUCCESS' atau 'PENDING'
+    required String status, // 'SUCCESS' | 'PENDING'
+    @JsonKey(name: 'loan_id') String? loanId,
     @JsonKey(name: 'created_at') required DateTime createdAt,
   }) = _TransactionEntity;
 

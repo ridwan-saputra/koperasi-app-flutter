@@ -19,7 +19,20 @@ class DatabaseHelper {
     final path = join(dbPath, filePath);
 
     // Buka database, jika belum ada otomatis memanggil _createDB
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: _createDB,
+      onUpgrade: _upgradeDB,
+    );
+  }
+
+  Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute(
+        'ALTER TABLE transactions ADD COLUMN loan_id TEXT REFERENCES loans (id)',
+      );
+    }
   }
 
 Future _createDB(Database db, int version) async {
@@ -45,8 +58,10 @@ Future _createDB(Database db, int version) async {
         type TEXT NOT NULL,
         nominal REAL NOT NULL,
         status TEXT NOT NULL,
+        loan_id TEXT,
         created_at TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+        FOREIGN KEY (loan_id) REFERENCES loans (id) ON DELETE SET NULL
       )
     ''');
 

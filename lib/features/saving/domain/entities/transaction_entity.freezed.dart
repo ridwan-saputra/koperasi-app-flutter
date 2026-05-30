@@ -24,10 +24,13 @@ mixin _$TransactionEntity {
   String get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'user_id')
   String get userId => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError; // Contoh: 'DEPOSIT'
+  String get type =>
+      throw _privateConstructorUsedError; // 'DEPOSIT' | 'CICILAN'
   double get nominal => throw _privateConstructorUsedError;
   String get status =>
-      throw _privateConstructorUsedError; // Contoh: 'SUCCESS' atau 'PENDING'
+      throw _privateConstructorUsedError; // 'SUCCESS' | 'PENDING'
+  @JsonKey(name: 'loan_id')
+  String? get loanId => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
 
@@ -54,6 +57,7 @@ abstract class $TransactionEntityCopyWith<$Res> {
     String type,
     double nominal,
     String status,
+    @JsonKey(name: 'loan_id') String? loanId,
     @JsonKey(name: 'created_at') DateTime createdAt,
   });
 }
@@ -78,6 +82,7 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
     Object? type = null,
     Object? nominal = null,
     Object? status = null,
+    Object? loanId = freezed,
     Object? createdAt = null,
   }) {
     return _then(
@@ -102,6 +107,10 @@ class _$TransactionEntityCopyWithImpl<$Res, $Val extends TransactionEntity>
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
                       as String,
+            loanId: freezed == loanId
+                ? _value.loanId
+                : loanId // ignore: cast_nullable_to_non_nullable
+                      as String?,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -127,6 +136,7 @@ abstract class _$$TransactionEntityImplCopyWith<$Res>
     String type,
     double nominal,
     String status,
+    @JsonKey(name: 'loan_id') String? loanId,
     @JsonKey(name: 'created_at') DateTime createdAt,
   });
 }
@@ -150,6 +160,7 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
     Object? type = null,
     Object? nominal = null,
     Object? status = null,
+    Object? loanId = freezed,
     Object? createdAt = null,
   }) {
     return _then(
@@ -174,6 +185,10 @@ class __$$TransactionEntityImplCopyWithImpl<$Res>
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
                   as String,
+        loanId: freezed == loanId
+            ? _value.loanId
+            : loanId // ignore: cast_nullable_to_non_nullable
+                  as String?,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -192,6 +207,7 @@ class _$TransactionEntityImpl implements _TransactionEntity {
     required this.type,
     required this.nominal,
     required this.status,
+    @JsonKey(name: 'loan_id') this.loanId,
     @JsonKey(name: 'created_at') required this.createdAt,
   });
 
@@ -205,19 +221,22 @@ class _$TransactionEntityImpl implements _TransactionEntity {
   final String userId;
   @override
   final String type;
-  // Contoh: 'DEPOSIT'
+  // 'DEPOSIT' | 'CICILAN'
   @override
   final double nominal;
   @override
   final String status;
-  // Contoh: 'SUCCESS' atau 'PENDING'
+  // 'SUCCESS' | 'PENDING'
+  @override
+  @JsonKey(name: 'loan_id')
+  final String? loanId;
   @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'TransactionEntity(id: $id, userId: $userId, type: $type, nominal: $nominal, status: $status, createdAt: $createdAt)';
+    return 'TransactionEntity(id: $id, userId: $userId, type: $type, nominal: $nominal, status: $status, loanId: $loanId, createdAt: $createdAt)';
   }
 
   @override
@@ -230,14 +249,23 @@ class _$TransactionEntityImpl implements _TransactionEntity {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.nominal, nominal) || other.nominal == nominal) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.loanId, loanId) || other.loanId == loanId) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, userId, type, nominal, status, createdAt);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    userId,
+    type,
+    nominal,
+    status,
+    loanId,
+    createdAt,
+  );
 
   /// Create a copy of TransactionEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -263,6 +291,7 @@ abstract class _TransactionEntity implements TransactionEntity {
     required final String type,
     required final double nominal,
     required final String status,
+    @JsonKey(name: 'loan_id') final String? loanId,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _$TransactionEntityImpl;
 
@@ -275,11 +304,14 @@ abstract class _TransactionEntity implements TransactionEntity {
   @JsonKey(name: 'user_id')
   String get userId;
   @override
-  String get type; // Contoh: 'DEPOSIT'
+  String get type; // 'DEPOSIT' | 'CICILAN'
   @override
   double get nominal;
   @override
-  String get status; // Contoh: 'SUCCESS' atau 'PENDING'
+  String get status; // 'SUCCESS' | 'PENDING'
+  @override
+  @JsonKey(name: 'loan_id')
+  String? get loanId;
   @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;
